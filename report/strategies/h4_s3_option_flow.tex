@@ -1,0 +1,48 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+\subsection{H4 and S3: option order flow and next-day stock returns}\label{sec:h4}
+
+\paragraph{Economic intuition and literature.}
+Informed traders use options for leverage and concealment, so option order flow and implied-volatility asymmetries can lead stock prices \citep{easley1998,pan2006,cremers2010,xing2010,johnsonso2012}. The signal is built from the sampled tape using ratios only, which keeps it robust to the sampling cap.
+
+\paragraph{Specification.}
+\begin{itemize}
+\item \emph{Primary signal:} the delta-weighted order imbalance of day $t$,
+\begin{equation}
+\mathrm{OI}^{\mathrm{flow}}_{i,t} = \frac{\sum_k \delta_k \, \mathrm{size}_k \, \mathrm{side}_k}{\sum_k |\delta_k| \, \mathrm{size}_k}, \label{eq:flow}
+\end{equation}
+summed over regular-hours option trades $k$ on name $i$. The side is $+1$ if the price is above the mid and $-1$ if it is below (the quote rule), and $\delta_k$ is the same-day EOD delta.
+\item \emph{Secondary signals:} the IV spread (OI-weighted mean of $\mathrm{IV}_{\mathrm{call}} - \mathrm{IV}_{\mathrm{put}}$ over matched strike and expiry pairs, 10--60 DTE); the smirk (OTM-put IV at $K/S$ nearest 0.95 within $[0.80, 0.95]$ minus ATM-call IV nearest $K/S = 1$, 10--60 DTE, with a negative sign expected); and an equal-weight $z$-composite.
+\item \emph{Portfolio:} 15 single names (16 minus META), cross-sectional demeaned ranks scaled to 100\% gross, dollar neutral, held from the $t+1$ opening cross to the $t+2$ opening cross.
+\item \emph{Execution tier:} T1 opening-auction prints, with fees and short borrow. GOOGL has no auction data, so it is ranked but traded at the 09:31 window NBBO.
+\item \emph{Evaluation:} the Fama--MacBeth slope of the next open-to-open return on the cross-sectionally $z$-scored signal (Newey--West $t$) and the long-short Sharpe ratio.
+\item \emph{S3 variants (wave 3, exploratory):} \texttt{all} (equal to H4); \texttt{open}, flow on contracts whose OI rises (the timing of OI is an assumption); and \texttt{short\_otm}, with DTE of at most 30 and $|\delta| < 0.4$. Holding periods are 1 day and 5 days (5 overlapping sub-books). S3 has no primary.
+\end{itemize}
+
+\paragraph{Implementation.}
+The wave-2 engine is \file{wave2/cpp/h4_info.cpp}. It was re-implemented in wave 3 with realistic fees as \file{wave3/cpp/s3_flow.cpp}. Signals come from \file{wave2/context.py} and \file{wave3/context3.py}. S3 was derived from a wave-2 result, so it runs on the full 2022--2024 sample and cannot be confirmed here.
+
+\paragraph{Out-of-sample testing and results.}
+Table~\ref{tab:h4} reports the results. The Fama--MacBeth slope on the $1\sigma$ flow signal is 3.6 bp per day in development ($t = 1.63$) and 12 bp in the holdout ($t = 2.32$; \figref{fig:h4}{fig08_h4_fama_macbeth.png}). The effect is gone within a week: 5-day holds are negative for every flow definition (\figref{fig:s3decay}{fig15_s3_decay.png}). The opening-flow and short-dated-OTM refinements do not improve on raw flow in development.
+
+We classify this as a lead. It survives the kill rule and realistic fees. Its development evidence, however, is not distinguishable from the best of the trials we ran, and it is the one wave-2 result we went on to refine. The sample is 15 names, typically about 10 tradeable.
+
+\begin{table}[tbp]
+\centering\small
+\caption{H4 and S3: long-short option-flow book.}\label{tab:h4}
+\begin{tabularx}{\linewidth}{@{}l r r r Y@{}}
+\toprule
+Sample & Ann.\ excess & Sharpe & NW $t$ & Other \\
+\midrule
+Wave 2 dev & $+$7.8\% & 0.90 & 1.48 & DSR 0.17; Romano--Wolf $p = 0.36$ \\
+Wave 2 holdout (2024H2) & $+$23.7\% & 3.26 & & bootstrap CI $+$7\% to $+$42\% \\
+Wave 3 dev, realistic fees, 1-day hold & $+$8.6\% & 0.96 & 1.38 & \\
+Wave 3 test (2024), 1-day hold & $+$12.9\% & 1.71 & 1.82 & \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\Fig{wave2}{fig08_h4_fama_macbeth.png}{H4: Fama--MacBeth slopes by signal and period (\texttt{wave2/figures/fig08\_h4\_fama\_macbeth.png}).}{fig:h4}
+\Fig{wave3}{fig15_s3_decay.png}{S3: decay of the flow effect with holding period (\texttt{wave3/figures/fig15\_s3\_decay.png}).}{fig:s3decay}
+\ifSubfilesClassLoaded{\section*{References}\input{../refs}}{}
+\end{document}

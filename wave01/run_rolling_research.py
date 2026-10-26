@@ -26,7 +26,7 @@ from options_lab.analytics import block_boot_ci, deflated_sharpe, newey_west_t, 
 from options_lab.data import load_market
 from options_lab.engine import Cfg, run
 
-ROOT = pathlib.Path(__file__).resolve().parent
+ROOT = pathlib.Path(__file__).resolve().parents[1]
 OUT = ROOT / "reports" / "rolling_research"
 UNIVERSE = (
     "SPY", "QQQ", "SPX", "AAPL", "MSFT", "NVDA", "TSLA", "GOOGL", "AMZN",

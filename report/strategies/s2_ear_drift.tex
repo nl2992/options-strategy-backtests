@@ -1,0 +1,40 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+\subsection{S2: earnings-announcement-return drift}\label{sec:s2}
+
+\paragraph{Economic intuition and literature.}
+Prices may under-react to earnings news. The market's own reaction serves as a surprise measure that needs no analyst forecasts, which this dataset lacks \citep{brandt2008,chan1996}.
+
+\paragraph{Specification.}
+\begin{itemize}
+\item \emph{Signal:} the earnings-announcement return, beta-adjusted,
+\begin{equation}
+\mathrm{EAR}_i = r_i - \beta_i \, r_{\mathrm{SPY}},
+\end{equation}
+measured over the reaction window. For after-close announcers (AMC) the window runs from the close of announcement day $A$ to the close of $A+1$. For before-open announcers (BMO) it runs from the close of $A-1$ to the close of $A$.
+\item \emph{Rule:} take $\mathrm{sign}(\mathrm{EAR})$ at the next session's opening cross, hold 20 sessions and exit at the close, beta-hedged with SPY (60-session OLS beta, capped to $[0.5, 2]$).
+\item \emph{Portfolio:} 10\% of equity per event.
+\item \emph{Execution tier:} T1. If the opening cross is missing, the order fills at that day's close.
+\item \emph{Secondaries:} only events with $|\mathrm{EAR}| > 2\%$, and a 40-session hold.
+\end{itemize}
+
+\paragraph{Implementation.}
+The engine is \file{wave3/cpp/s_events.cpp}, which is shared with S1 and S4. Confirmatory split: development 2022-01-03 to 2023-12-29, test year 2024.
+
+\paragraph{Out-of-sample testing and results.}
+Development gives $+0.50\%$ per event ($t = 0.59$), annual excess return $+3.4\%$ and Sharpe 0.64. The test gives $+1.55\%$ per event (59 events, $t = 1.32$), annual excess return $+12.8\%$ and Sharpe 1.63 (Table~\ref{tab:s2}). The $|\mathrm{EAR}| > 2\%$ subset is similar. The 40-session hold was negative in development and positive in the test. S2 survives the kill rule but is not significant. The direction is consistent with the literature, but about 100 development events give low power.
+
+\begin{table}[tbp]
+\centering\small
+\caption{S2: earnings-announcement-return drift, 20-session hold.}\label{tab:s2}
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+Sample & Ann.\ excess & Sharpe & NW $t$ & Per event & Event $t$ \\
+\midrule
+Development & $+$3.4\% & 0.64 & 0.87 & $+$0.50\% & 0.59 \\
+Test (2024) & $+$12.8\% & 1.63 & & $+$1.55\% & 1.32 \\
+\bottomrule
+\end{tabular}
+\end{table}
+\ifSubfilesClassLoaded{\section*{References}\input{../refs}}{}
+\end{document}

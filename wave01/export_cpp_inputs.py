@@ -5,11 +5,11 @@ import sys
 import numpy as np
 import pandas as pd
 
-sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from options_lab.data import load_market
 from run_rolling_research import UNIVERSE, make_folds
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data/cpp_cache"
 OUT.mkdir(parents=True, exist_ok=True)
 market, _ = load_market(universe=UNIVERSE)

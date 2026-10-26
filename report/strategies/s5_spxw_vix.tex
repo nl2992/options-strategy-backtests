@@ -1,0 +1,42 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+\subsection{S5: SPXW premium held to settlement, timed by the VIX term structure}\label{sec:s5}
+
+\paragraph{Economic intuition and literature.}
+The variance risk premium is larger, and short-volatility exposure safer, when the VIX term structure is in contango \citep{carr2009,bollerslev2009,johnson2017}. At 8--30 DTE, crossing the spread once costs about 0.6\% of premium against about 8\% for a 0DTE round trip (F1).
+
+\paragraph{Specification.}
+\begin{itemize}
+\item \emph{Signal:} the primary filter trades when $\mathrm{VIX3M}/\mathrm{VIX} > 1$ on the entry date (EOD). Secondaries are unconditional entry and $\mathrm{VIX} - \mathrm{RV21}(\mathrm{SPX}) > 0$.
+\item \emph{Rule:} every Friday, sell an SPXW iron fly at the EOD bid/ask. The short strike is nearest spot, and the wings sit at the strikes nearest $\pm 1.5 \times$ the straddle mid. The expiry is the Friday expiry with DTE in $[26, 30]$ (otherwise the nearest in $[21, 35]$). Hold to PM settlement on \texttt{sp500\_cash\_level}.
+\item \emph{Portfolio and risk:} maximum loss at most 1\% of equity per position, with up to about 4 overlapping positions. The maximum loss per contract is
+\begin{equation}
+(w - \text{credit}) \times 100,
+\end{equation}
+with $w$ the wing width.
+\item \emph{Execution tier:} T3 entry, T0 exit.
+\item \emph{Test:} account Sharpe, Newey--West $t$, and the alpha from a regression of daily returns on SPY daily returns, with beta reported.
+\end{itemize}
+
+\paragraph{Implementation.}
+The engine is \file{wave3/cpp/s5_spxw_vix.cpp}, with T3 entry, T0 exit and daily EOD-mid marks. Amendment B1 was made after seeing development aggregate P\&L and is disclosed. One contract often risks more than 1\% of the account, and 64\% of entries were skipped as \texttt{size\_lt1}, concentrated in high-volatility weeks. The per-trade test therefore uses every entry at one lot. B1 changes the denominator of the per-trade test, not the trading rule, and the account-level series is reported as written. A hand-recomputed S5 trade matches the engine to the cent.
+
+\paragraph{Out-of-sample testing and results.}
+The development return on maximum loss is $-22.0\%$ per trade (93 trades, clustered $t = -2.99$), and 2024 is $-12.8\%$ ($t = -1.27$) (Table~\ref{tab:s5}). Realized moves equalled the implied straddle: the mean $|\mathrm{settle} - K|$ was 164 points against a mean straddle of 163. After buying wings, the fly loses (\figref{fig:s5}{fig14_s5_vrp.png}). The contango filter bound on only 1 of about 95 development Fridays, so it could not time anything in this sample. The decision is reject.
+
+\begin{table}[tbp]
+\centering\small
+\caption{S5: 28-DTE SPXW iron fly, VIX-timed.}\label{tab:s5}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Sample & Ann.\ excess & Sharpe & NW $t$ & Per trade (on max loss) \\
+\midrule
+Development & $-$3.5\% & $-$1.08 & $-$1.37 & $-$22.0\% ($t=-2.99$) \\
+Test (2024) & $-$8.9\% & $-$1.59 & & $-$12.8\% ($t=-1.27$) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\Fig{wave3}{fig14_s5_vrp.png}{S5: realized settlement distance against the implied straddle (\texttt{wave3/figures/fig14\_s5\_vrp.png}).}{fig:s5}
+\ifSubfilesClassLoaded{\section*{References}\input{../refs}}{}
+\end{document}

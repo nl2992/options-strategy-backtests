@@ -3,7 +3,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "reports/rolling_research"
 cpp = pd.read_csv(OUT / "cpp_oos_scorecard.csv").set_index("strategy")
 py = pd.read_csv(OUT / "oos_scorecard.csv").set_index("strategy")

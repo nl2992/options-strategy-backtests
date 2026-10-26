@@ -1,0 +1,37 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+\subsection{S7: 0DTE pin at the maximum-OI strike}\label{sec:s7}
+
+\paragraph{Economic intuition and literature.}
+Hedging of large open interest may pull prices toward heavily traded strikes at expiry \citep{ni2005}. S7 asks whether centering an iron fly on the maximum-OI strike beats centering it on the ATM strike.
+
+\paragraph{Specification.}
+\begin{itemize}
+\item \emph{Rule:} H1's iron fly at 14:00 and 15:00, centered on the strike with the largest call plus put OI from the last record before expiry, among strikes within $\pm 1$ straddle of $F$ from \eqref{eq:forward}. The comparison is the ATM fly on the same days.
+\item \emph{Execution tier:} T2 entry, T0 settlement, realistic fees.
+\item \emph{Status:} exploratory, because the design is derived from H1. There is no primary.
+\item \emph{Evaluation:} the pin-minus-ATM difference in return on risk, over paired days.
+\end{itemize}
+
+\paragraph{Implementation.}
+The engine is \file{wave3/cpp/s7_pin.cpp}. It runs on the full 2022--2024 sample, so the development and test columns below are splits of one exploratory sample. S7 cannot be confirmed here.
+
+\paragraph{Out-of-sample testing and results.}
+Pin minus ATM is $+0.3$ percentage points of return on risk at 14:00 (447 paired days, $t = 0.11$) and $-0.1$ points at 15:00 ($t = -0.04$). The pin strike equalled the ATM strike on 18\% (14:00) and 27\% (15:00) of days, and its median distance from ATM was zero (\figref{fig:s7}{fig16_s7_pin.png}). We detect no pin effect.
+
+\begin{table}[tbp]
+\centering\small
+\caption{S7: pin fly against ATM fly (exploratory).}\label{tab:s7}
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Split & Ann.\ excess & Sharpe & NW $t$ \\
+\midrule
+Development & $+$1.0\% & 0.28 & 0.38 \\
+Test (2024) & $-$0.1\% & $-$0.03 & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\Fig{wave3}{fig16_s7_pin.png}{S7: pin strike against ATM strike (\texttt{wave3/figures/fig16\_s7\_pin.png}).}{fig:s7}
+\ifSubfilesClassLoaded{\section*{References}\input{../refs}}{}
+\end{document}

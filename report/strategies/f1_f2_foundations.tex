@@ -1,0 +1,44 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+\subsection{F1 and F2: execution-cost atlas and engine validation}\label{sec:f1f2}
+
+\paragraph{Economic intuition and literature.}
+Quoted spreads can overstate the costs that liquidity takers pay \citep{muravyevpearson2020}. Wave 2 therefore began with a measurement study (F1) and an engine check (F2). Neither is an alpha test. If the engine cannot reproduce a published, mechanically defined index, its strategy P\&L is not credible.
+
+\paragraph{Specification.}
+\begin{itemize}
+\item \textbf{F1 (measurement).} For each trade with a valid NBBO, compute the effective half-spread ratio and the relative quoted spread,
+\begin{equation}
+\rho = \frac{|p - m|}{(a - b)/2}, \qquad s_{\mathrm{rel}} = \frac{a - b}{m},
+\end{equation}
+where $p$ is the trade price, $m$ the NBBO mid, $a$ the ask and $b$ the bid. Results are bucketed by root, DTE $\{0, 1\text{--}7, 8\text{--}30, 31\text{--}90, >90\}$, moneyness $|K/S - 1| \in \{<1\%, 1\text{--}3\%, 3\text{--}7\%, >7\%\}$ and half-hour, with $S$ the prior close. A timing check compares the EOD-chain bid/offer with the tape's last NBBO before 16:00 and 16:15 for SPY, SPXW and AAPL.
+\item \textbf{F2 (replication).} On each third-Friday expiry, sell one SPXW PM put expiring next month. The strike is the listed strike nearest to and not above the SPX close. The fill is the EOD bid (T3; the mid is a sensitivity). Collateral is the full strike notional in T-bills. Hold to expiry and settle on the SPX close (T0).
+\item \textbf{Execution tier:} T3 entry and T0 exit for F2. \textbf{Risk:} the put is fully cash-secured.
+\end{itemize}
+
+\paragraph{Implementation.}
+F1 uses \file{wave2/extract.py} to build the atlas from about 1.5 billion sampled development-period prints. F2 is run by the common engine (\file{wave2/cpp/common.hpp} and the F2 engine). The F2 tape sensitivity uses the first bid within 120 s of the 15:55 sale (amendment A3). The primary EOD variant is unchanged. Differences from the Cboe PUT index are expected because PUT uses AM settlement and a VWAP sale window. These differences are documented rather than fitted.
+
+\paragraph{Out-of-sample testing and results.}
+Neither study has a holdout test. For F1, SPXW prints well inside the spread, SPY and QQQ print near the touch, and single names fall in between (\figref{fig:cost}{fig02_cost_atlas.png}). The effective/quoted half-spread ratio is 0.57 at 0DTE ATM and 0.34 at 8--30 DTE for SPXW, and 0.75--0.93 for SPY and QQQ. Other traders' effective spreads are not our fills, so T2 still crosses the full spread.
+
+For F2, the monthly cash-secured SPXW put-write tracks the Cboe PUT index (Table~\ref{tab:f2}). The mean gap is in line with PUT's AM settlement and VWAP sale window, which we do not replicate. We read this as evidence that the option accounting is sound.
+
+\begin{table}[tbp]
+\centering\small
+\caption{F2: put-write engine against the Cboe PUT index.}\label{tab:f2}
+\begin{tabular}{@{}lr@{}}
+\toprule
+Statistic & Value \\
+\midrule
+Monthly return correlation & 0.972 \\
+Tracking error & 2.3\% per year \\
+Mean monthly gap & $-$9 bp \\
+Monthly rolls & 34 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\Fig{wave2}{fig03_putwrite_validation.png}{F2: put-write engine against the Cboe PUT index (\texttt{wave2/figures/fig03\_putwrite\_validation.png}).}{fig:f2}
+\ifSubfilesClassLoaded{\section*{References}\input{../refs}}{}
+\end{document}

@@ -1,0 +1,36 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+\subsection{S9 and S10: FOMC drift and turn-of-the-month}\label{sec:s9}
+
+\paragraph{Economic intuition and literature.}
+US equities may earn much of their excess return in the 24 hours before scheduled FOMC announcements \citep{lucca2015} and around month turns \citep{ariel1987,lakonishok1988}. The month-turn effect is consistent with payment-flow timing.
+
+\paragraph{Specification.}
+\begin{itemize}
+\item \textbf{S9 (FOMC):} buy SPY at the close of the session before the announcement and sell at the close of announcement day. The data has no 14:00 price, so the post-announcement reaction is included (a known dilution). The portfolio is 100\% of equity over 24 events.
+\item \textbf{S10 (turn of the month):} buy SPY at the close of the second-to-last session of the month and sell at the close of the third session of the next month. The portfolio is 100\% of equity.
+\item \emph{Execution tier:} T1 official closes for both. Both are confirmatory but underpowered.
+\end{itemize}
+
+\paragraph{Implementation.}
+The engine is \file{wave3/cpp/s_calendar.cpp}, with official-close fills. S9 has 24 events in total, so it cannot detect anything smaller than a very large effect.
+
+\paragraph{Out-of-sample testing and results.}
+Both strategies are positive in development (S9 $+2.3\%$ per year, Sharpe 0.53; S10 $+3.0\%$, Sharpe 0.36) and negative in 2024 (Table~\ref{tab:s9}). Both are rejected.
+
+\begin{table}[tbp]
+\centering\small
+\caption{S9 and S10: calendar strategies on SPY.}\label{tab:s9}
+\begin{tabular}{@{}llrrrr@{}}
+\toprule
+Strategy & Sample & Ann.\ excess & Sharpe & NW $t$ & \\
+\midrule
+S9 & Development & $+$2.3\% & 0.53 & 0.74 & \\
+S9 & Test (2024) & $-$0.9\% & $-$0.25 & & \\
+S10 & Development & $+$3.0\% & 0.36 & 0.55 & \\
+S10 & Test (2024) & $-$3.6\% & $-$0.61 & & \\
+\bottomrule
+\end{tabular}
+\end{table}
+\ifSubfilesClassLoaded{\section*{References}\input{../refs}}{}
+\end{document}

@@ -1,0 +1,38 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+\subsection{S4: pre-announcement option flow}\label{sec:s4}
+
+\paragraph{Economic intuition and literature.}
+Informed trading may concentrate in options before scheduled news \citep{roll2010,johnsonso2012}. S4 asks whether the direction of option flow in the week before earnings predicts the announcement return.
+
+\paragraph{Specification.}
+\begin{itemize}
+\item \emph{Signal:} the delta-weighted flow ratio of \eqref{eq:flow}, with numerator and denominator summed separately over sessions $X-5,\dots,X-1$,
+\begin{equation}
+\mathrm{Flow}^{\mathrm{pre}} = \frac{\sum_{s=X-5}^{X-1} \mathrm{num}_s}{\sum_{s=X-5}^{X-1} \mathrm{den}_s}.
+\end{equation}
+\item \emph{Rule:} buy or sell at the close of $X$ in the direction of $\mathrm{sign}(\mathrm{Flow}^{\mathrm{pre}})$. Exit at the first opening cross after the announcement, or at that day's close if the cross is missing. Beta-hedge with SPY.
+\item \emph{Portfolio:} 10\% of equity per event.
+\item \emph{Status:} exploratory, because the signal is derived from H4.
+\end{itemize}
+
+\paragraph{Implementation.}
+The engine is \file{wave3/cpp/s_events.cpp}. Because S4 is exploratory, it runs on the full 2022--2024 sample and cannot be confirmed here.
+
+\paragraph{Out-of-sample testing and results.}
+The result is $+0.41\%$ per event in development ($t = 0.38$) and $+0.07\%$ in 2024 (Table~\ref{tab:s4}). We detect no effect at this sample size.
+
+\begin{table}[tbp]
+\centering\small
+\caption{S4: pre-announcement option flow (exploratory).}\label{tab:s4}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Sample & Ann.\ excess & Sharpe & NW $t$ & Per event \\
+\midrule
+Development & $+$2.2\% & 0.45 & 0.66 & $+$0.41\% \\
+Test (2024) & $+$0.2\% & 0.05 & & $+$0.07\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+\ifSubfilesClassLoaded{\section*{References}\input{../refs}}{}
+\end{document}
