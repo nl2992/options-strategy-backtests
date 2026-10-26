@@ -136,7 +136,7 @@ As a check on the accounting, a monthly SPX put-writing strategy built with the 
 
 \section{Implementation}\label{app:impl}
 
-\paragraph{Code.} Each strategy is a C++ program that reads reduced data files, applies the rules day by day, and writes a trade list and a daily return series (\texttt{wave3/cpp/s3\_flow.cpp}, \texttt{wave3/cpp/s\_events.cpp}). Python scripts reduce the raw data with DuckDB and compute the statistics (\texttt{wave3/scorecard3.py}, \texttt{alloc/allocate.py}). Notebooks produce the figures.
+\paragraph{Code.} Each strategy is a C++ program that reads reduced data files, applies the rules day by day, and writes a trade list and a daily return series (\texttt{engines/option\_flow.cpp}, \texttt{engines/earnings\_events.cpp}). Python scripts reduce the raw data with DuckDB and compute the statistics (\texttt{analysis/scorecard.py}, \texttt{analysis/portfolio.py}). The notebook \texttt{notebooks/figures.ipynb} draws the figures.
 
 \paragraph{Accounting.} Stock positions are marked to the official close every day. Splits adjust share counts, and dividends are credited on the ex-date. Each strategy refuses to simulate dates after a configured end date, which is how the 2024 data were held back during development.
 

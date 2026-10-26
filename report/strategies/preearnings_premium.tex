@@ -9,7 +9,7 @@ Stocks have historically earned higher returns in the days around scheduled earn
 The signal is the earnings calendar. Let $X$ be the last trading session before the announcement: the announcement day itself for an after-close release, and the day before for a before-open release. We buy the stock at the close five sessions before $X$ and sell at the close of $X$. Each position is 10\% of capital, hedged with an offsetting SPY position sized by the same 60-day beta as in Section~\ref{sec:drift}. We assume announcement dates are known at least seven trading days in advance, as companies normally publish them.
 
 \subsection{Implementation}
-The data cover 165 announcements: 105 in 2022--2023 and 60 in 2024. All trades are at the official close. The engine is \texttt{wave3/cpp/s\_events.cpp}.
+The data cover 165 announcements: 105 in 2022--2023 and 60 in 2024. All trades are at the official close. The engine is \texttt{engines/earnings\_events.cpp}.
 
 \subsection{Results}
 In 2022--2023 the hedged return averaged 0.46\% per event ($t = 1.47$), and the strategy earned 2.4\% a year over cash (Sharpe 0.88). In 2024 the average fell to 0.06\% per event ($t = 0.02$), with 0.4\% a year (Sharpe 0.17). Table~\ref{tab:pre} summarizes the results, and Figure~\ref{fig:events} compares the per-event averages with the drift strategy.

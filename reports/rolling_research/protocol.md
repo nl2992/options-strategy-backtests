@@ -1,5 +1,0 @@
-# Rolling research protocol
-
-This is a pre-registered grid across defined-risk credit spreads/condors and call/put debit verticals. For each fold, the best configuration by training Sharpe is selected from the preceding 252-session window (minimum 15 closed trades), then evaluated on the next 63 sessions. Folds advance 63 sessions; the final partial window is retained if it has at least 20 sessions. A 126-session feature warm-up is available before the first training window. Every fold starts flat and closes positions at its final eligible EOD snapshot.
-
-Signals use the prior session close. Costs use the existing conservative bid/ask fills and $0.65 per contract-side placeholder fee; fee x2 and 1.5x spread costs are run on selected fold configurations. Returns are reported from a $1 normalized NAV, with integer sizing under the separate $200,000 reference account. The universe excludes META pending identity/history repair. This 2022-2024 walk-forward is research-stage historical OOS, not a virgin holdout.

@@ -15,7 +15,7 @@ Because it is a ratio, the signal does not depend on how many trades the data so
 Each day we rank the tradeable stocks by flow (on average 12). Weights are the ranks minus their average, scaled so the long side and the short side are each 50\% of capital. The portfolio is therefore dollar neutral. We enter at the next morning's opening auction ($t+1$) and hold until the following opening auction ($t+2$), rebalancing every day.
 
 \subsection{Implementation}
-Positions trade only in opening auctions, so the costs are fees and short borrowing. Daily rebalancing turns over about 128\% of capital per day, counting both sides. On a \$1M account, fees average \$48.8 a day and borrowing \$7.9 a day. The engine is \texttt{wave3/cpp/s3\_flow.cpp}.
+Positions trade only in opening auctions, so the costs are fees and short borrowing. Daily rebalancing turns over about 128\% of capital per day, counting both sides. On a \$1M account, fees average \$48.8 a day and borrowing \$7.9 a day. The engine is \texttt{engines/option\_flow.cpp}.
 
 \subsection{Results}
 Table~\ref{tab:flow} reports the results. The strategy earned 8.6\% a year over cash in 2022--2023 and 12.9\% in 2024. Its returns are almost unrelated to the market: the beta to SPY is close to zero in both periods. Removing the five best days leaves 4.3\% and 5.8\% a year, so the result does not hinge on a handful of days.

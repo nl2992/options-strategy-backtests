@@ -15,7 +15,7 @@ The reaction window runs from the last close before the announcement to the firs
 The morning after the reaction window ends, we buy the stock at the opening auction if EAR is positive and short it if EAR is negative. Each position is 10\% of capital, hedged with an offsetting SPY position of $\beta$ times its value. We close both after 20 trading days at the official close. Positions in different stocks can overlap.
 
 \subsection{Implementation}
-The data cover 163 announcements across the 15 stocks: 104 in 2022--2023 and 59 in 2024. All trades are auction or closing-price trades. The engine is \texttt{wave3/cpp/s\_events.cpp}.
+The data cover 163 announcements across the 15 stocks: 104 in 2022--2023 and 59 in 2024. All trades are auction or closing-price trades. The engine is \texttt{engines/earnings\_events.cpp}.
 
 \subsection{Results}
 Table~\ref{tab:drift} reports the results. The average hedged return per event was 0.50\% in 2022--2023 and 1.55\% in 2024 (Figure~\ref{fig:events}). Neither average is statistically different from zero, with $t$-statistics of 0.59 and 1.32. At the account level the strategy earned 3.4\% a year over cash in 2022--2023 and 12.8\% in 2024.
