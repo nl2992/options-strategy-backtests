@@ -1,0 +1,186 @@
+{
+ "ccs": {
+  "strategy": "ccs",
+  "delta": 0.15,
+  "dte_target": 30,
+  "filt": "f2",
+  "ivp_min": 60.0,
+  "entry_every": 5,
+  "exit_dte": 5,
+  "tp": 0.5,
+  "stop_mult": 2.0,
+  "equity0": 200000.0,
+  "risk_trade": 0.005,
+  "risk_agg": 0.05,
+  "risk_und": 0.02,
+  "reserve": 0.25,
+  "widths": [
+   [
+    "SPY",
+    5.0
+   ],
+   [
+    "QQQ",
+    5.0
+   ],
+   [
+    "SPX",
+    10.0
+   ]
+  ],
+  "fee": 0.65,
+  "fee_mult": 1.0,
+  "slip": 1.0,
+  "entry_delay": 0,
+  "min_credit_frac": 0.1,
+  "max_rel_spread_short": 0.3,
+  "max_rel_spread_long": 0.6,
+  "min_oi": 10,
+  "start_idx": 63,
+  "end_idx": null,
+  "shuffle_seed": null,
+  "universe": [
+   "SPY",
+   "QQQ",
+   "SPX"
+  ]
+ },
+ "dv": {
+  "strategy": "dv",
+  "delta": 0.5,
+  "dte_target": 30,
+  "filt": "f1",
+  "ivp_min": 60.0,
+  "entry_every": 5,
+  "exit_dte": 5,
+  "tp": 0.5,
+  "stop_mult": 2.0,
+  "equity0": 200000.0,
+  "risk_trade": 0.005,
+  "risk_agg": 0.05,
+  "risk_und": 0.02,
+  "reserve": 0.25,
+  "widths": [
+   [
+    "SPY",
+    5.0
+   ],
+   [
+    "QQQ",
+    5.0
+   ],
+   [
+    "SPX",
+    10.0
+   ]
+  ],
+  "fee": 0.65,
+  "fee_mult": 1.0,
+  "slip": 1.0,
+  "entry_delay": 0,
+  "min_credit_frac": 0.1,
+  "max_rel_spread_short": 0.3,
+  "max_rel_spread_long": 0.6,
+  "min_oi": 10,
+  "start_idx": 63,
+  "end_idx": null,
+  "shuffle_seed": null,
+  "universe": [
+   "SPY",
+   "QQQ",
+   "SPX"
+  ]
+ },
+ "ic": {
+  "strategy": "ic",
+  "delta": 0.2,
+  "dte_target": 30,
+  "filt": "f1",
+  "ivp_min": 60.0,
+  "entry_every": 5,
+  "exit_dte": 5,
+  "tp": 0.5,
+  "stop_mult": 2.0,
+  "equity0": 200000.0,
+  "risk_trade": 0.005,
+  "risk_agg": 0.05,
+  "risk_und": 0.02,
+  "reserve": 0.25,
+  "widths": [
+   [
+    "SPY",
+    5.0
+   ],
+   [
+    "QQQ",
+    5.0
+   ],
+   [
+    "SPX",
+    10.0
+   ]
+  ],
+  "fee": 0.65,
+  "fee_mult": 1.0,
+  "slip": 1.0,
+  "entry_delay": 0,
+  "min_credit_frac": 0.1,
+  "max_rel_spread_short": 0.3,
+  "max_rel_spread_long": 0.6,
+  "min_oi": 10,
+  "start_idx": 63,
+  "end_idx": null,
+  "shuffle_seed": null,
+  "universe": [
+   "SPY",
+   "QQQ",
+   "SPX"
+  ]
+ },
+ "pcs": {
+  "strategy": "pcs",
+  "delta": 0.2,
+  "dte_target": 30,
+  "filt": "f1",
+  "ivp_min": 60.0,
+  "entry_every": 5,
+  "exit_dte": 5,
+  "tp": 0.5,
+  "stop_mult": 2.0,
+  "equity0": 200000.0,
+  "risk_trade": 0.005,
+  "risk_agg": 0.05,
+  "risk_und": 0.02,
+  "reserve": 0.25,
+  "widths": [
+   [
+    "SPY",
+    5.0
+   ],
+   [
+    "QQQ",
+    5.0
+   ],
+   [
+    "SPX",
+    10.0
+   ]
+  ],
+  "fee": 0.65,
+  "fee_mult": 1.0,
+  "slip": 1.0,
+  "entry_delay": 0,
+  "min_credit_frac": 0.1,
+  "max_rel_spread_short": 0.3,
+  "max_rel_spread_long": 0.6,
+  "min_oi": 10,
+  "start_idx": 63,
+  "end_idx": null,
+  "shuffle_seed": null,
+  "universe": [
+   "SPY",
+   "QQQ",
+   "SPX"
+  ]
+ }
+}

@@ -1,0 +1,51 @@
+{
+  "path": "eod_option_chain/forward_prices_2023.parquet",
+  "source": "https://dl.dropboxusercontent.com/scl/fo/2c1nb640th4w0xcoi3cmh/AFZs2XNP4mhdtQgaOc8tr_g/eod_option_chain/forward_prices_2023.parquet?rlkey=acoq02zwz7tqfe19hvwej5ul7&dl=0",
+  "bytes": 1044484,
+  "rows": 97183,
+  "row_groups": 1,
+  "columns": [
+    {
+      "name": "option_security_id",
+      "type": "double",
+      "nullable": true,
+      "min": "101121.0",
+      "max": "154402.0",
+      "nulls": 0
+    },
+    {
+      "name": "date",
+      "type": "timestamp[ns]",
+      "nullable": true,
+      "min": "2023-01-03 00:00:00",
+      "max": "2023-12-29 00:00:00",
+      "nulls": 0
+    },
+    {
+      "name": "expiration",
+      "type": "timestamp[ns]",
+      "nullable": true,
+      "min": "2023-01-03 00:00:00",
+      "max": "2029-12-21 00:00:00",
+      "nulls": 0
+    },
+    {
+      "name": "amsettlement",
+      "type": "double",
+      "nullable": true,
+      "min": "-0.0",
+      "max": "1.0",
+      "nulls": 0
+    },
+    {
+      "name": "forwardprice",
+      "type": "double",
+      "nullable": true,
+      "min": "7.1e-05",
+      "max": "5912.193581",
+      "nulls": 0
+    }
+  ],
+  "created_by": "parquet-cpp-arrow version 19.0.0",
+  "method": "remote Parquet footer; min/max/null counts from row-group statistics"
+}

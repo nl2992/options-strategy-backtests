@@ -1,0 +1,139 @@
+{
+  "path": "option_trades_with_greeks_quarterly/2023Q2.parquet",
+  "source": "https://www.dropbox.com/scl/fo/2c1nb640th4w0xcoi3cmh/APSlne7nvpRl7fe3DnP5hvI/option_trades_with_greeks_quarterly/2023Q2.parquet?rlkey=acoq02zwz7tqfe19hvwej5ul7&dl=0",
+  "bytes": 4430132767,
+  "rows": 179131126,
+  "row_groups": 180,
+  "columns": [
+    {
+      "name": "symbol",
+      "type": "string",
+      "nullable": true,
+      "min": "AAPL",
+      "max": "XOM",
+      "nulls": 0
+    },
+    {
+      "name": "expiration",
+      "type": "string",
+      "nullable": true,
+      "min": "2023-04-03",
+      "max": "2028-12-15",
+      "nulls": 0
+    },
+    {
+      "name": "strike",
+      "type": "double",
+      "nullable": true,
+      "min": "1.67",
+      "max": "12000.0",
+      "nulls": 0
+    },
+    {
+      "name": "right",
+      "type": "string",
+      "nullable": true,
+      "min": "CALL",
+      "max": "PUT",
+      "nulls": 0
+    },
+    {
+      "name": "timestamp",
+      "type": "timestamp[ns]",
+      "nullable": true,
+      "min": "2023-04-03 09:30:00.002000",
+      "max": "2023-06-30 15:59:59.998000",
+      "nulls": 179742
+    },
+    {
+      "name": "size",
+      "type": "int64",
+      "nullable": true,
+      "min": "1",
+      "max": "125000",
+      "nulls": 0
+    },
+    {
+      "name": "exchange",
+      "type": "int64",
+      "nullable": true,
+      "min": "1",
+      "max": "69",
+      "nulls": 0
+    },
+    {
+      "name": "price",
+      "type": "double",
+      "nullable": true,
+      "min": "0.01",
+      "max": "6158.47",
+      "nulls": 0
+    },
+    {
+      "name": "delta",
+      "type": "double",
+      "nullable": true,
+      "min": "-1.0",
+      "max": "1.0",
+      "nulls": 0
+    },
+    {
+      "name": "theta",
+      "type": "double",
+      "nullable": true,
+      "min": "-100.3392",
+      "max": "0.9083",
+      "nulls": 0
+    },
+    {
+      "name": "vega",
+      "type": "double",
+      "nullable": true,
+      "min": "-0.0",
+      "max": "4080.1243",
+      "nulls": 0
+    },
+    {
+      "name": "rho",
+      "type": "double",
+      "nullable": true,
+      "min": "-44288.6497",
+      "max": "14427.0093",
+      "nulls": 0
+    },
+    {
+      "name": "implied_vol",
+      "type": "double",
+      "nullable": true,
+      "min": "-0.0",
+      "max": "214748.3646",
+      "nulls": 0
+    },
+    {
+      "name": "underlying_timestamp",
+      "type": "timestamp[ns]",
+      "nullable": true,
+      "min": "2023-04-03 09:30:00",
+      "max": "2023-06-30 16:00:00",
+      "nulls": 0
+    },
+    {
+      "name": "underlying_price",
+      "type": "double",
+      "nullable": true,
+      "min": "-0.0",
+      "max": "4458.48",
+      "nulls": 0
+    },
+    {
+      "name": "trading_date",
+      "type": "string",
+      "nullable": true,
+      "min": "2023-04-03",
+      "max": "2023-06-30",
+      "nulls": 0
+    }
+  ],
+  "created_by": "parquet-cpp-arrow version 19.0.0",
+  "method": "remote Parquet footer; min/max/null counts from row-group statistics"
+}

@@ -1,0 +1,74 @@
+{
+  "path": "auction_volume_summary_monthly/2022_01.parquet",
+  "bytes": 27627,
+  "rows": 629,
+  "row_groups": 1,
+  "columns": [
+    {
+      "name": "date",
+      "type": "string",
+      "nullable": true,
+      "min": "2022-01-03",
+      "max": "2022-01-31",
+      "nulls": 0
+    },
+    {
+      "name": "sym_root",
+      "type": "string",
+      "nullable": true,
+      "min": "AAPL",
+      "max": "XOM",
+      "nulls": 0
+    },
+    {
+      "name": "side",
+      "type": "string",
+      "nullable": true,
+      "min": "MOC",
+      "max": "MOO",
+      "nulls": 0
+    },
+    {
+      "name": "total_size",
+      "type": "int64",
+      "nullable": true,
+      "min": "1",
+      "max": "13025207",
+      "nulls": 0
+    },
+    {
+      "name": "num_prints",
+      "type": "int64",
+      "nullable": true,
+      "min": "1",
+      "max": "9",
+      "nulls": 0
+    },
+    {
+      "name": "vwap_price",
+      "type": "double",
+      "nullable": true,
+      "min": "11.95",
+      "max": "3408.76",
+      "nulls": 0
+    },
+    {
+      "name": "first_print_time",
+      "type": "string",
+      "nullable": true,
+      "min": "09:30:00.007483",
+      "max": "16:00:27.914221",
+      "nulls": 0
+    },
+    {
+      "name": "last_print_time",
+      "type": "string",
+      "nullable": true,
+      "min": "09:30:00.136826",
+      "max": "16:00:27.914221",
+      "nulls": 0
+    }
+  ],
+  "method": "full downloaded file and Parquet footer",
+  "source": "shared folder / auction_volume_summary_monthly (ZIP download)"
+}

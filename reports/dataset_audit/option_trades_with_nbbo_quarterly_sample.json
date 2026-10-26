@@ -1,0 +1,182 @@
+{
+  "path": "option_trades_with_nbbo_quarterly/2022Q1.parquet",
+  "rows_scanned": 1048576,
+  "sample": [
+    {
+      "root": "AAPL",
+      "expiration": 20230317,
+      "strike": 230000,
+      "right": "C",
+      "ms_of_day": 42604340,
+      "size": 2,
+      "exchange": 9,
+      "price": 8.1,
+      "bid_size": 24,
+      "bid": 7.95,
+      "ask_size": 27,
+      "ask": 8.1,
+      "date": 20220103
+    },
+    {
+      "root": "AAPL",
+      "expiration": 20230317,
+      "strike": 230000,
+      "right": "C",
+      "ms_of_day": 46320419,
+      "size": 1,
+      "exchange": 5,
+      "price": 8.27,
+      "bid_size": 2,
+      "bid": 8.2,
+      "ask_size": 242,
+      "ask": 8.35,
+      "date": 20220103
+    },
+    {
+      "root": "AAPL",
+      "expiration": 20230317,
+      "strike": 230000,
+      "right": "C",
+      "ms_of_day": 46699220,
+      "size": 1,
+      "exchange": 46,
+      "price": 8.2,
+      "bid_size": 239,
+      "bid": 8.0,
+      "ask_size": 233,
+      "ask": 8.3,
+      "date": 20220103
+    },
+    {
+      "root": "AAPL",
+      "expiration": 20230317,
+      "strike": 230000,
+      "right": "C",
+      "ms_of_day": 47936127,
+      "size": 10,
+      "exchange": 65,
+      "price": 8.2,
+      "bid_size": 577,
+      "bid": 8.05,
+      "ask_size": 216,
+      "ask": 8.35,
+      "date": 20220103
+    },
+    {
+      "root": "AAPL",
+      "expiration": 20230317,
+      "strike": 230000,
+      "right": "C",
+      "ms_of_day": 49769031,
+      "size": 5,
+      "exchange": 7,
+      "price": 8.4,
+      "bid_size": 24,
+      "bid": 8.3,
+      "ask_size": 183,
+      "ask": 8.5,
+      "date": 20220103
+    },
+    {
+      "root": "AAPL",
+      "expiration": 20230317,
+      "strike": 230000,
+      "right": "C",
+      "ms_of_day": 57019426,
+      "size": 1,
+      "exchange": 1,
+      "price": 8.1,
+      "bid_size": 327,
+      "bid": 7.55,
+      "ask_size": 118,
+      "ask": 8.35,
+      "date": 20220103
+    }
+  ],
+  "distinct": {
+    "root": {
+      "count": 6,
+      "examples": [
+        "AAPL",
+        "QQQ",
+        "SPXW",
+        "SPX",
+        "SPY",
+        "TSLA"
+      ]
+    },
+    "right": {
+      "count": 2,
+      "examples": [
+        "C",
+        "P"
+      ]
+    },
+    "exchange": {
+      "count": 16,
+      "examples": [
+        "9",
+        "5",
+        "46",
+        "65",
+        "7",
+        "1",
+        "4",
+        "47",
+        "11",
+        "42",
+        "43",
+        "69",
+        "60",
+        "31",
+        "6",
+        "22"
+      ]
+    },
+    "ms_of_day": {
+      "count": 661347,
+      "examples": [
+        "42604340",
+        "46320419",
+        "46699220",
+        "47936127",
+        "49769031",
+        "57019426",
+        "34817362",
+        "34817466",
+        "35060734",
+        "36764331",
+        "43759181",
+        "44637614",
+        "46437125",
+        "47603142",
+        "48134738",
+        "52619812",
+        "54648508",
+        "38577838",
+        "43041646",
+        "46187875",
+        "46272503",
+        "44298343",
+        "48887759",
+        "56130519",
+        "34202343"
+      ]
+    },
+    "date": {
+      "count": 1,
+      "examples": [
+        "20220103"
+      ]
+    }
+  },
+  "diagnostics": {
+    "price_nulls": 0,
+    "bid_nulls": 0,
+    "ask_nulls": 0,
+    "crossed": 24,
+    "locked": 1434,
+    "nonpositive_bid": 10616,
+    "nonpositive_ask": 176
+  }
+}

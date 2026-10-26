@@ -1,0 +1,115 @@
+{
+  "path": "option_trades_with_nbbo_quarterly/2022Q1.parquet",
+  "source": "https://www.dropbox.com/scl/fo/2c1nb640th4w0xcoi3cmh/AHNmAnLHEwhEKFUwmuJR6Io/option_trades_with_nbbo_quarterly/2022Q1.parquet?rlkey=acoq02zwz7tqfe19hvwej5ul7&dl=0",
+  "bytes": 1756165786,
+  "rows": 134827458,
+  "row_groups": 136,
+  "columns": [
+    {
+      "name": "root",
+      "type": "string",
+      "nullable": true,
+      "min": "AAPL",
+      "max": "XOM",
+      "nulls": 0
+    },
+    {
+      "name": "expiration",
+      "type": "int64",
+      "nullable": true,
+      "min": "20220103",
+      "max": "20261218",
+      "nulls": 0
+    },
+    {
+      "name": "strike",
+      "type": "int64",
+      "nullable": true,
+      "min": "1000",
+      "max": "10000000",
+      "nulls": 0
+    },
+    {
+      "name": "right",
+      "type": "string",
+      "nullable": true,
+      "min": "C",
+      "max": "P",
+      "nulls": 0
+    },
+    {
+      "name": "ms_of_day",
+      "type": "int64",
+      "nullable": true,
+      "min": "8701",
+      "max": "86396433",
+      "nulls": 0
+    },
+    {
+      "name": "size",
+      "type": "int64",
+      "nullable": true,
+      "min": "1",
+      "max": "249927",
+      "nulls": 0
+    },
+    {
+      "name": "exchange",
+      "type": "int64",
+      "nullable": true,
+      "min": "1",
+      "max": "69",
+      "nulls": 0
+    },
+    {
+      "name": "price",
+      "type": "double",
+      "nullable": true,
+      "min": "-0.0",
+      "max": "5045.57",
+      "nulls": 0
+    },
+    {
+      "name": "bid_size",
+      "type": "int64",
+      "nullable": true,
+      "min": "0",
+      "max": "39937",
+      "nulls": 0
+    },
+    {
+      "name": "bid",
+      "type": "double",
+      "nullable": true,
+      "min": "-0.0",
+      "max": "4894.1",
+      "nulls": 0
+    },
+    {
+      "name": "ask_size",
+      "type": "int64",
+      "nullable": true,
+      "min": "0",
+      "max": "52863",
+      "nulls": 0
+    },
+    {
+      "name": "ask",
+      "type": "double",
+      "nullable": true,
+      "min": "-0.0",
+      "max": "5194.1",
+      "nulls": 0
+    },
+    {
+      "name": "date",
+      "type": "int64",
+      "nullable": true,
+      "min": "20220103",
+      "max": "20220331",
+      "nulls": 0
+    }
+  ],
+  "created_by": "parquet-cpp-arrow version 19.0.0",
+  "method": "remote Parquet footer; min/max/null counts from row-group statistics"
+}

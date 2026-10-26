@@ -1,0 +1,67 @@
+{
+  "path": "sp500_membership_2022_2024.parquet",
+  "source": "https://dl.dropboxusercontent.com/scl/fo/2c1nb640th4w0xcoi3cmh/ABiGsmm_xZid9WNlslgErv0/sp500_membership_2022_2024.parquet?rlkey=acoq02zwz7tqfe19hvwej5ul7&dl=0",
+  "bytes": 23677,
+  "rows": 557,
+  "row_groups": 1,
+  "columns": [
+    {
+      "name": "security_id",
+      "type": "int64",
+      "nullable": true,
+      "min": "10104",
+      "max": "93436",
+      "nulls": 0
+    },
+    {
+      "name": "in_date",
+      "type": "string",
+      "nullable": true,
+      "min": "1925-12-31",
+      "max": "2024-12-23",
+      "nulls": 0
+    },
+    {
+      "name": "out_date",
+      "type": "string",
+      "nullable": true,
+      "min": "2022-02-02",
+      "max": "2024-12-31",
+      "nulls": 0
+    },
+    {
+      "name": "ticker",
+      "type": "string",
+      "nullable": true,
+      "min": "A",
+      "max": "ZY",
+      "nulls": 60
+    },
+    {
+      "name": "company_name_pit",
+      "type": "string",
+      "nullable": true,
+      "min": "A E S CORP",
+      "max": "ZOETIS INC",
+      "nulls": 12
+    },
+    {
+      "name": "share_class_code",
+      "type": "int64",
+      "nullable": true,
+      "min": "11",
+      "max": "48",
+      "nulls": 12
+    },
+    {
+      "name": "exchange_code",
+      "type": "int64",
+      "nullable": true,
+      "min": "1",
+      "max": "3",
+      "nulls": 12
+    }
+  ],
+  "created_by": "parquet-cpp-arrow version 19.0.0",
+  "method": "remote Parquet footer; min/max/null counts from row-group statistics"
+}

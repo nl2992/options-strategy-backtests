@@ -1,0 +1,267 @@
+{
+  "path": "fundamentals_daily_2022_2024.parquet",
+  "source": "https://dl.dropboxusercontent.com/scl/fo/2c1nb640th4w0xcoi3cmh/AH_pNd6fcBYPDWrXmtyOXfg/fundamentals_daily_2022_2024.parquet?rlkey=acoq02zwz7tqfe19hvwej5ul7&dl=0",
+  "bytes": 456340,
+  "rows": 12801,
+  "row_groups": 1,
+  "columns": [
+    {
+      "name": "security_id",
+      "type": "int64",
+      "nullable": true,
+      "min": "10107",
+      "max": "93436",
+      "nulls": 0
+    },
+    {
+      "name": "date",
+      "type": "timestamp[ns]",
+      "nullable": true,
+      "min": "2022-01-03 00:00:00",
+      "max": "2024-12-31 00:00:00",
+      "nulls": 0
+    },
+    {
+      "name": "as_of_date",
+      "type": "timestamp[ns]",
+      "nullable": true,
+      "min": "2021-10-13 00:00:00",
+      "max": "2024-12-12 00:00:00",
+      "nulls": 753
+    },
+    {
+      "name": "report_date",
+      "type": "timestamp[ns]",
+      "nullable": true,
+      "min": "2021-09-30 00:00:00",
+      "max": "2024-10-31 00:00:00",
+      "nulls": 753
+    },
+    {
+      "name": "revenue",
+      "type": "double",
+      "nullable": true,
+      "min": "4313.0",
+      "max": "173388.0",
+      "nulls": 1506
+    },
+    {
+      "name": "cogs",
+      "type": "double",
+      "nullable": true,
+      "min": "-127.0",
+      "max": "128708.0",
+      "nulls": 753
+    },
+    {
+      "name": "sga",
+      "type": "double",
+      "nullable": true,
+      "min": "1133.0",
+      "max": "64045.0",
+      "nulls": 753
+    },
+    {
+      "name": "operating_income",
+      "type": "double",
+      "nullable": true,
+      "min": "-176.0",
+      "max": "41488.0",
+      "nulls": 753
+    },
+    {
+      "name": "net_income",
+      "type": "double",
+      "nullable": true,
+      "min": "-3844.0",
+      "max": "34630.0",
+      "nulls": 753
+    },
+    {
+      "name": "eps_basic",
+      "type": "double",
+      "nullable": true,
+      "min": "-7.56",
+      "max": "31.15",
+      "nulls": 753
+    },
+    {
+      "name": "eps_diluted",
+      "type": "double",
+      "nullable": true,
+      "min": "-7.56",
+      "max": "31.15",
+      "nulls": 753
+    },
+    {
+      "name": "operating_cash_flow_ytd",
+      "type": "double",
+      "nullable": true,
+      "min": "-189770.0",
+      "max": "122151.0",
+      "nulls": 753
+    },
+    {
+      "name": "capex_ytd",
+      "type": "double",
+      "nullable": true,
+      "min": "-0.0",
+      "max": "63645.0",
+      "nulls": 753
+    },
+    {
+      "name": "total_assets",
+      "type": "double",
+      "nullable": true,
+      "min": "11153.0",
+      "max": "4210048.0",
+      "nulls": 753
+    },
+    {
+      "name": "total_liabilities",
+      "type": "double",
+      "nullable": true,
+      "min": "4017.0",
+      "max": "3864212.0",
+      "nulls": 753
+    },
+    {
+      "name": "book_equity",
+      "type": "double",
+      "nullable": true,
+      "min": "7136.0",
+      "max": "345836.0",
+      "nulls": 753
+    },
+    {
+      "name": "common_equity",
+      "type": "double",
+      "nullable": true,
+      "min": "7136.0",
+      "max": "324186.0",
+      "nulls": 753
+    },
+    {
+      "name": "long_term_debt",
+      "type": "double",
+      "nullable": true,
+      "min": "270.0",
+      "max": "418998.0",
+      "nulls": 753
+    },
+    {
+      "name": "short_term_debt",
+      "type": "double",
+      "nullable": true,
+      "min": "3.1",
+      "max": "448140.0",
+      "nulls": 984
+    },
+    {
+      "name": "cash_and_equivalents",
+      "type": "double",
+      "nullable": true,
+      "min": "2211.8",
+      "max": "1056407.0",
+      "nulls": 753
+    },
+    {
+      "name": "inventory",
+      "type": "double",
+      "nullable": true,
+      "min": "-0.0",
+      "max": "64706.0",
+      "nulls": 1354
+    },
+    {
+      "name": "receivables",
+      "type": "double",
+      "nullable": true,
+      "min": "765.386",
+      "max": "1303558.0",
+      "nulls": 753
+    },
+    {
+      "name": "current_liabilities",
+      "type": "double",
+      "nullable": true,
+      "min": "3564.0",
+      "max": "176392.0",
+      "nulls": 1506
+    },
+    {
+      "name": "interest_expense",
+      "type": "double",
+      "nullable": true,
+      "min": "5.0",
+      "max": "1074.0",
+      "nulls": 2066
+    },
+    {
+      "name": "rd_expense",
+      "type": "double",
+      "nullable": true,
+      "min": "-0.0",
+      "max": "22304.0",
+      "nulls": 2079
+    },
+    {
+      "name": "common_shares_outstanding_mn",
+      "type": "double",
+      "nullable": true,
+      "min": "405.0",
+      "max": "24562.0",
+      "nulls": 753
+    },
+    {
+      "name": "dividend_per_share",
+      "type": "double",
+      "nullable": true,
+      "min": "-0.0",
+      "max": "5.25",
+      "nulls": 753
+    },
+    {
+      "name": "income_taxes",
+      "type": "double",
+      "nullable": true,
+      "min": "-5752.0",
+      "max": "14874.0",
+      "nulls": 753
+    },
+    {
+      "name": "net_ppe",
+      "type": "double",
+      "nullable": true,
+      "min": "1001.0",
+      "max": "314444.0",
+      "nulls": 753
+    },
+    {
+      "name": "goodwill",
+      "type": "double",
+      "nullable": true,
+      "min": "-0.0",
+      "max": "119374.0",
+      "nulls": 1506
+    },
+    {
+      "name": "intangibles",
+      "type": "double",
+      "nullable": true,
+      "min": "-0.0",
+      "max": "148827.0",
+      "nulls": 753
+    },
+    {
+      "name": "gross_profit",
+      "type": "double",
+      "nullable": true,
+      "min": "2183.0",
+      "max": "91342.0",
+      "nulls": 1506
+    }
+  ],
+  "created_by": "parquet-cpp-arrow version 19.0.0",
+  "method": "remote Parquet footer; min/max/null counts from row-group statistics"
+}

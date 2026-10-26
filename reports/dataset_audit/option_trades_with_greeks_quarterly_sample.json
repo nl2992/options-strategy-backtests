@@ -1,0 +1,198 @@
+{
+  "path": "option_trades_with_greeks_quarterly/2022Q1.parquet",
+  "rows_scanned": 1048576,
+  "sample": [
+    {
+      "symbol": "AAPL",
+      "expiration": "2022-01-21",
+      "strike": 145.0,
+      "right": "PUT",
+      "timestamp": "2022-01-03 09:30:05.649000",
+      "size": 2,
+      "exchange": 6,
+      "price": 0.12,
+      "delta": -0.0179,
+      "theta": -0.0218,
+      "vega": 1.7477,
+      "rho": -0.1637,
+      "implied_vol": 0.4501,
+      "underlying_timestamp": "2022-01-03 09:30:05",
+      "underlying_price": 177.93,
+      "trading_date": "2022-01-03"
+    },
+    {
+      "symbol": "AAPL",
+      "expiration": "2022-01-21",
+      "strike": 145.0,
+      "right": "PUT",
+      "timestamp": "2022-01-03 09:30:05.660000",
+      "size": 1,
+      "exchange": 5,
+      "price": 0.12,
+      "delta": -0.0179,
+      "theta": -0.0218,
+      "vega": 1.7477,
+      "rho": -0.1637,
+      "implied_vol": 0.4501,
+      "underlying_timestamp": "2022-01-03 09:30:05",
+      "underlying_price": 177.93,
+      "trading_date": "2022-01-03"
+    },
+    {
+      "symbol": "AAPL",
+      "expiration": "2022-01-21",
+      "strike": 145.0,
+      "right": "PUT",
+      "timestamp": "2022-01-03 09:30:05.969000",
+      "size": 1,
+      "exchange": 4,
+      "price": 0.13,
+      "delta": -0.0191,
+      "theta": -0.0233,
+      "vega": 1.8437,
+      "rho": -0.1744,
+      "implied_vol": 0.456,
+      "underlying_timestamp": "2022-01-03 09:30:05",
+      "underlying_price": 177.93,
+      "trading_date": "2022-01-03"
+    },
+    {
+      "symbol": "AAPL",
+      "expiration": "2022-01-21",
+      "strike": 145.0,
+      "right": "PUT",
+      "timestamp": "2022-01-03 09:30:08.717000",
+      "size": 2,
+      "exchange": 43,
+      "price": 0.12,
+      "delta": -0.0179,
+      "theta": -0.0217,
+      "vega": 1.7456,
+      "rho": -0.1634,
+      "implied_vol": 0.4492,
+      "underlying_timestamp": "2022-01-03 09:30:08",
+      "underlying_price": 177.86,
+      "trading_date": "2022-01-03"
+    },
+    {
+      "symbol": "AAPL",
+      "expiration": "2022-01-21",
+      "strike": 145.0,
+      "right": "PUT",
+      "timestamp": "2022-01-03 09:30:09.260000",
+      "size": 3,
+      "exchange": 43,
+      "price": 0.12,
+      "delta": -0.0179,
+      "theta": -0.0218,
+      "vega": 1.7475,
+      "rho": -0.1636,
+      "implied_vol": 0.4492,
+      "underlying_timestamp": "2022-01-03 09:30:09",
+      "underlying_price": 177.85,
+      "trading_date": "2022-01-03"
+    },
+    {
+      "symbol": "AAPL",
+      "expiration": "2022-01-21",
+      "strike": 145.0,
+      "right": "PUT",
+      "timestamp": "2022-01-03 09:30:09.635000",
+      "size": 2,
+      "exchange": 46,
+      "price": 0.12,
+      "delta": -0.0179,
+      "theta": -0.0218,
+      "vega": 1.7475,
+      "rho": -0.1636,
+      "implied_vol": 0.4492,
+      "underlying_timestamp": "2022-01-03 09:30:09",
+      "underlying_price": 177.85,
+      "trading_date": "2022-01-03"
+    }
+  ],
+  "distinct": {
+    "symbol": {
+      "count": 6,
+      "examples": [
+        "AAPL",
+        "QQQ",
+        "SPX",
+        "SPXW",
+        "SPY",
+        "TSLA"
+      ]
+    },
+    "right": {
+      "count": 2,
+      "examples": [
+        "PUT",
+        "CALL"
+      ]
+    },
+    "exchange": {
+      "count": 16,
+      "examples": [
+        "6",
+        "5",
+        "4",
+        "43",
+        "46",
+        "65",
+        "22",
+        "11",
+        "7",
+        "60",
+        "31",
+        "69",
+        "1",
+        "42",
+        "47",
+        "9"
+      ]
+    },
+    "timestamp": {
+      "count": 664702,
+      "examples": [
+        "2022-01-03 09:30:05.649000",
+        "2022-01-03 09:30:05.660000",
+        "2022-01-03 09:30:05.969000",
+        "2022-01-03 09:30:08.717000",
+        "2022-01-03 09:30:09.260000",
+        "2022-01-03 09:30:09.635000",
+        "2022-01-03 09:30:15.118000",
+        "2022-01-03 09:30:15.119000",
+        "2022-01-03 09:30:17.528000",
+        "2022-01-03 09:30:18.362000",
+        "2022-01-03 09:30:18.370000",
+        "2022-01-03 09:30:18.678000",
+        "2022-01-03 09:30:19.034000",
+        "2022-01-03 09:30:19.199000",
+        "2022-01-03 09:30:19.220000",
+        "2022-01-03 09:30:19.301000",
+        "2022-01-03 09:30:22.067000",
+        "2022-01-03 09:30:22.384000",
+        "2022-01-03 09:31:07.388000",
+        "2022-01-03 09:31:07.392000",
+        "2022-01-03 09:31:43.004000",
+        "2022-01-03 09:32:03.887000",
+        "2022-01-03 09:32:05.925000",
+        "2022-01-03 09:32:05.934000",
+        "2022-01-03 09:32:20.016000"
+      ]
+    },
+    "trading_date": {
+      "count": 1,
+      "examples": [
+        "2022-01-03"
+      ]
+    }
+  },
+  "diagnostics": {
+    "price_nulls": 0,
+    "implied_vol_nulls": 0,
+    "timestamp_nulls": 1022,
+    "iv_zero": 3223,
+    "iv_over_10": 0
+  }
+}

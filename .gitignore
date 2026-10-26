@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.DS_Store
+# raw vendor tapes: re-download with wave2/fetch_dev.sh and wave2/fetch_holdout.sh
+wave2/raw/
+data/raw/eod_option_chain/eod_option_chain_*.parquet
+# compiled engines
+**/cpp/bin_*
+*.part

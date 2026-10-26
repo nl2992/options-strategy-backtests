@@ -1,0 +1,43 @@
+{
+  "path": "eod_option_chain/_ticker_id_mapping.parquet",
+  "source": "https://dl.dropboxusercontent.com/scl/fo/2c1nb640th4w0xcoi3cmh/AIXcSTlC4DfWgF8h3bqAvmY/eod_option_chain/_ticker_id_mapping.parquet?rlkey=acoq02zwz7tqfe19hvwej5ul7&dl=0",
+  "bytes": 3717,
+  "rows": 20,
+  "row_groups": 1,
+  "columns": [
+    {
+      "name": "ticker",
+      "type": "string",
+      "nullable": true,
+      "min": "AAPL",
+      "max": "XOM",
+      "nulls": 0
+    },
+    {
+      "name": "option_security_id",
+      "type": "int64",
+      "nullable": true,
+      "min": "101121",
+      "max": "154402",
+      "nulls": 0
+    },
+    {
+      "name": "issuer",
+      "type": "string",
+      "nullable": true,
+      "min": "ADVANCED MICRO DEVICES INC.",
+      "max": "WALMART INC",
+      "nulls": 0
+    },
+    {
+      "name": "note",
+      "type": "string",
+      "nullable": true,
+      "min": "AM-settled monthly (symbol prefix SPX, am_settlement=1)",
+      "max": "Single-name equity (VDS expansion 2026-06-29)",
+      "nulls": 0
+    }
+  ],
+  "created_by": "parquet-cpp-arrow version 19.0.0",
+  "method": "remote Parquet footer; min/max/null counts from row-group statistics"
+}

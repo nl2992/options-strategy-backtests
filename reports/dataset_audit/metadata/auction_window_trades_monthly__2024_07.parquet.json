@@ -1,0 +1,83 @@
+{
+  "path": "auction_window_trades_monthly/2024_07.parquet",
+  "source": "https://www.dropbox.com/scl/fo/2c1nb640th4w0xcoi3cmh/ACKizemfzRWF0baVrVEaPh8/auction_window_trades_monthly/2024_07.parquet?rlkey=acoq02zwz7tqfe19hvwej5ul7&dl=0",
+  "bytes": 39221255,
+  "rows": 2554013,
+  "row_groups": 22,
+  "columns": [
+    {
+      "name": "date",
+      "type": "string",
+      "nullable": true,
+      "min": "2024-07-01",
+      "max": "2024-07-31",
+      "nulls": 0
+    },
+    {
+      "name": "time_m",
+      "type": "string",
+      "nullable": true,
+      "min": "09:29:55.000641",
+      "max": "16:00:29.999730",
+      "nulls": 0
+    },
+    {
+      "name": "ex",
+      "type": "string",
+      "nullable": true,
+      "min": "A",
+      "max": "Z",
+      "nulls": 0
+    },
+    {
+      "name": "sym_root",
+      "type": "string",
+      "nullable": true,
+      "min": "AAPL",
+      "max": "XOM",
+      "nulls": 0
+    },
+    {
+      "name": "tr_scond",
+      "type": "string",
+      "nullable": true,
+      "min": "4",
+      "max": "ZI",
+      "nulls": 50277
+    },
+    {
+      "name": "size",
+      "type": "int64",
+      "nullable": true,
+      "min": "1",
+      "max": "37368619",
+      "nulls": 0
+    },
+    {
+      "name": "price",
+      "type": "double",
+      "nullable": true,
+      "min": "19.02",
+      "max": "1766.64",
+      "nulls": 0
+    },
+    {
+      "name": "tr_corr",
+      "type": "string",
+      "nullable": true,
+      "min": "00",
+      "max": "10",
+      "nulls": 0
+    },
+    {
+      "name": "tr_id",
+      "type": "string",
+      "nullable": true,
+      "min": "1",
+      "max": "99999",
+      "nulls": 0
+    }
+  ],
+  "created_by": "parquet-cpp-arrow version 19.0.0",
+  "method": "remote Parquet footer; min/max/null counts from row-group statistics"
+}

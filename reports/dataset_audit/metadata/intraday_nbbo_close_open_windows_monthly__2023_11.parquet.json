@@ -1,0 +1,99 @@
+{
+  "path": "intraday_nbbo_close_open_windows_monthly/2023_11.parquet",
+  "source": "https://www.dropbox.com/scl/fo/2c1nb640th4w0xcoi3cmh/AHj3vHGqo61oNod6BRYPZSE/intraday_nbbo_close_open_windows_monthly/2023_11.parquet?rlkey=acoq02zwz7tqfe19hvwej5ul7&dl=0",
+  "bytes": 138130873,
+  "rows": 15374316,
+  "row_groups": 21,
+  "columns": [
+    {
+      "name": "date",
+      "type": "string",
+      "nullable": true,
+      "min": "2023-11-01",
+      "max": "2023-11-30",
+      "nulls": 0
+    },
+    {
+      "name": "time_m",
+      "type": "string",
+      "nullable": true,
+      "min": "09:29:00.000141",
+      "max": "16:00:59.999264",
+      "nulls": 0
+    },
+    {
+      "name": "sym_root",
+      "type": "string",
+      "nullable": true,
+      "min": "AAPL",
+      "max": "XOM",
+      "nulls": 0
+    },
+    {
+      "name": "best_bid",
+      "type": "double",
+      "nullable": true,
+      "min": "14.24",
+      "max": "996.13",
+      "nulls": 249
+    },
+    {
+      "name": "best_bid_sz",
+      "type": "int64",
+      "nullable": true,
+      "min": "100",
+      "max": "173900",
+      "nulls": 249
+    },
+    {
+      "name": "best_ask",
+      "type": "double",
+      "nullable": true,
+      "min": "17.08",
+      "max": "998.0",
+      "nulls": 225
+    },
+    {
+      "name": "best_ask_sz",
+      "type": "int64",
+      "nullable": true,
+      "min": "100",
+      "max": "1364100",
+      "nulls": 225
+    },
+    {
+      "name": "qu_cond",
+      "type": "string",
+      "nullable": true,
+      "min": "O",
+      "max": "R",
+      "nulls": 0
+    },
+    {
+      "name": "natbbo_ind",
+      "type": "string",
+      "nullable": true,
+      "min": "2",
+      "max": "U",
+      "nulls": 0
+    },
+    {
+      "name": "qu_source",
+      "type": "string",
+      "nullable": true,
+      "min": "C",
+      "max": "N",
+      "nulls": 0
+    },
+    {
+      "name": "nbbo_qu_cond",
+      "type": "string",
+      "nullable": true,
+      "min": null,
+      "max": null,
+      "nulls": 15374316
+    }
+  ],
+  "created_by": "parquet-cpp-arrow version 19.0.0",
+  "method": "remote Parquet footer; min/max/null counts from row-group statistics"
+}

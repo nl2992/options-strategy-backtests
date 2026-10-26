@@ -1,0 +1,219 @@
+{
+  "path": "eod_option_chain/eod_option_chain_2023.parquet",
+  "source": "https://dl.dropboxusercontent.com/scl/fo/2c1nb640th4w0xcoi3cmh/ANqLxh3iK08BsceHh9Qn_QQ/eod_option_chain/eod_option_chain_2023.parquet?rlkey=acoq02zwz7tqfe19hvwej5ul7&dl=0",
+  "bytes": 712636838,
+  "rows": 17479400,
+  "row_groups": 17,
+  "columns": [
+    {
+      "name": "option_security_id",
+      "type": "double",
+      "nullable": true,
+      "min": "101121.0",
+      "max": "154402.0",
+      "nulls": 0
+    },
+    {
+      "name": "date",
+      "type": "timestamp[ns]",
+      "nullable": true,
+      "min": "2023-01-03 00:00:00",
+      "max": "2023-12-29 00:00:00",
+      "nulls": 0
+    },
+    {
+      "name": "symbol",
+      "type": "string",
+      "nullable": true,
+      "min": "AAPL 230106C100000",
+      "max": "XOM1 241220P95000",
+      "nulls": 0
+    },
+    {
+      "name": "symbol_flag",
+      "type": "string",
+      "nullable": true,
+      "min": "1",
+      "max": "1",
+      "nulls": 0
+    },
+    {
+      "name": "exdate",
+      "type": "timestamp[ns]",
+      "nullable": true,
+      "min": "2023-01-03 00:00:00",
+      "max": "2029-12-21 00:00:00",
+      "nulls": 0
+    },
+    {
+      "name": "last_date",
+      "type": "timestamp[ns]",
+      "nullable": true,
+      "min": "2020-12-14 00:00:00",
+      "max": "2023-12-29 00:00:00",
+      "nulls": 3034664
+    },
+    {
+      "name": "cp_flag",
+      "type": "string",
+      "nullable": true,
+      "min": "C",
+      "max": "P",
+      "nulls": 0
+    },
+    {
+      "name": "strike_price",
+      "type": "double",
+      "nullable": true,
+      "min": "1670.0",
+      "max": "12000000.0",
+      "nulls": 0
+    },
+    {
+      "name": "best_bid",
+      "type": "double",
+      "nullable": true,
+      "min": "-0.0",
+      "max": "6763.4",
+      "nulls": 0
+    },
+    {
+      "name": "best_offer",
+      "type": "double",
+      "nullable": true,
+      "min": "0.01",
+      "max": "6847.3",
+      "nulls": 0
+    },
+    {
+      "name": "volume",
+      "type": "double",
+      "nullable": true,
+      "min": "-0.0",
+      "max": "914749.0",
+      "nulls": 0
+    },
+    {
+      "name": "open_interest",
+      "type": "double",
+      "nullable": true,
+      "min": "-0.0",
+      "max": "371602.0",
+      "nulls": 0
+    },
+    {
+      "name": "impl_volatility",
+      "type": "double",
+      "nullable": true,
+      "min": "0.013011",
+      "max": "2.999989",
+      "nulls": 2154195
+    },
+    {
+      "name": "delta",
+      "type": "double",
+      "nullable": true,
+      "min": "-0.999903",
+      "max": "1.000445",
+      "nulls": 2154195
+    },
+    {
+      "name": "gamma",
+      "type": "double",
+      "nullable": true,
+      "min": "-0.0",
+      "max": "0.411092",
+      "nulls": 2154195
+    },
+    {
+      "name": "vega",
+      "type": "double",
+      "nullable": true,
+      "min": "8e-06",
+      "max": "4293.079",
+      "nulls": 2154195
+    },
+    {
+      "name": "theta",
+      "type": "double",
+      "nullable": true,
+      "min": "-8765.538",
+      "max": "447.7617",
+      "nulls": 2154195
+    },
+    {
+      "name": "optionid",
+      "type": "double",
+      "nullable": true,
+      "min": "135977491.0",
+      "max": "159171697.0",
+      "nulls": 0
+    },
+    {
+      "name": "cfadj",
+      "type": "double",
+      "nullable": true,
+      "min": "1.0",
+      "max": "20.0",
+      "nulls": 0
+    },
+    {
+      "name": "am_settlement",
+      "type": "double",
+      "nullable": true,
+      "min": "-0.0",
+      "max": "1.0",
+      "nulls": 0
+    },
+    {
+      "name": "contract_size",
+      "type": "double",
+      "nullable": true,
+      "min": "7.0",
+      "max": "172.0",
+      "nulls": 0
+    },
+    {
+      "name": "ss_flag",
+      "type": "string",
+      "nullable": true,
+      "min": "0",
+      "max": "1",
+      "nulls": 0
+    },
+    {
+      "name": "forward_price",
+      "type": "string",
+      "nullable": true,
+      "min": null,
+      "max": null,
+      "nulls": 17479400
+    },
+    {
+      "name": "expiry_indicator",
+      "type": "string",
+      "nullable": true,
+      "min": "m",
+      "max": "w",
+      "nulls": 11262586
+    },
+    {
+      "name": "root",
+      "type": "string",
+      "nullable": true,
+      "min": null,
+      "max": null,
+      "nulls": 17479400
+    },
+    {
+      "name": "suffix",
+      "type": "string",
+      "nullable": true,
+      "min": null,
+      "max": null,
+      "nulls": 17479400
+    }
+  ],
+  "created_by": "parquet-cpp-arrow version 19.0.0",
+  "method": "remote Parquet footer; min/max/null counts from row-group statistics"
+}

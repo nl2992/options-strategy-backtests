@@ -1,0 +1,59 @@
+{
+  "path": "sector_returns_daily_2022_2024.parquet",
+  "source": "https://dl.dropboxusercontent.com/scl/fo/2c1nb640th4w0xcoi3cmh/AG92rrI35MxluXYfE7IbSIs/sector_returns_daily_2022_2024.parquet?rlkey=acoq02zwz7tqfe19hvwej5ul7&dl=0",
+  "bytes": 256648,
+  "rows": 8283,
+  "row_groups": 1,
+  "columns": [
+    {
+      "name": "date",
+      "type": "timestamp[ns]",
+      "nullable": true,
+      "min": "2022-01-03 00:00:00",
+      "max": "2024-12-31 00:00:00",
+      "nulls": 0
+    },
+    {
+      "name": "gics_sector",
+      "type": "string",
+      "nullable": true,
+      "min": "10",
+      "max": "60",
+      "nulls": 0
+    },
+    {
+      "name": "sector_vw_return",
+      "type": "double",
+      "nullable": true,
+      "min": "-0.08343698624104207",
+      "max": "0.08584081893429586",
+      "nulls": 0
+    },
+    {
+      "name": "sector_ew_return",
+      "type": "double",
+      "nullable": true,
+      "min": "-0.09572418867924527",
+      "max": "0.08875128846153846",
+      "nulls": 0
+    },
+    {
+      "name": "sector_constituent_count",
+      "type": "double",
+      "nullable": true,
+      "min": "32.0",
+      "max": "117.0",
+      "nulls": 0
+    },
+    {
+      "name": "sector_total_mcap",
+      "type": "double",
+      "nullable": true,
+      "min": "842805472.793",
+      "max": "17444151043.86835",
+      "nulls": 0
+    }
+  ],
+  "created_by": "parquet-cpp-arrow version 19.0.0",
+  "method": "remote Parquet footer; min/max/null counts from row-group statistics"
+}

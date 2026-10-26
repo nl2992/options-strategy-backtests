@@ -1,0 +1,251 @@
+{
+  "path": "equity_daily_2022_2024.parquet",
+  "source": "https://dl.dropboxusercontent.com/scl/fo/2c1nb640th4w0xcoi3cmh/AMb3c9EEG-zn_UarBbnlIsM/equity_daily_2022_2024.parquet?rlkey=acoq02zwz7tqfe19hvwej5ul7&dl=0",
+  "bytes": 1590318,
+  "rows": 13464,
+  "row_groups": 1,
+  "columns": [
+    {
+      "name": "security_id",
+      "type": "int64",
+      "nullable": true,
+      "min": "10107",
+      "max": "93436",
+      "nulls": 0
+    },
+    {
+      "name": "date",
+      "type": "timestamp[ns]",
+      "nullable": true,
+      "min": "2022-01-03 00:00:00",
+      "max": "2024-12-31 00:00:00",
+      "nulls": 0
+    },
+    {
+      "name": "open_raw",
+      "type": "double",
+      "nullable": true,
+      "min": "11.998",
+      "max": "3408.76001",
+      "nulls": 0
+    },
+    {
+      "name": "high_raw",
+      "type": "double",
+      "nullable": true,
+      "min": "12.31",
+      "max": "3428.0",
+      "nulls": 0
+    },
+    {
+      "name": "low_raw",
+      "type": "double",
+      "nullable": true,
+      "min": "11.73",
+      "max": "3357.37012",
+      "nulls": 0
+    },
+    {
+      "name": "close_raw",
+      "type": "double",
+      "nullable": true,
+      "min": "11.95",
+      "max": "3408.09009",
+      "nulls": 0
+    },
+    {
+      "name": "bid_eod",
+      "type": "double",
+      "nullable": true,
+      "min": "11.93",
+      "max": "3407.1499",
+      "nulls": 0
+    },
+    {
+      "name": "ask_eod",
+      "type": "double",
+      "nullable": true,
+      "min": "11.95",
+      "max": "3408.3999",
+      "nulls": 0
+    },
+    {
+      "name": "volume_raw",
+      "type": "double",
+      "nullable": true,
+      "min": "740695.0",
+      "max": "657542346.0",
+      "nulls": 0
+    },
+    {
+      "name": "trade_count",
+      "type": "int64",
+      "nullable": true,
+      "min": "21461",
+      "max": "4768802",
+      "nulls": 5290
+    },
+    {
+      "name": "total_return",
+      "type": "double",
+      "nullable": true,
+      "min": "-0.351166",
+      "max": "0.244326",
+      "nulls": 0
+    },
+    {
+      "name": "price_return_ex_div",
+      "type": "double",
+      "nullable": true,
+      "min": "-0.351166",
+      "max": "0.244326",
+      "nulls": 0
+    },
+    {
+      "name": "price_adj_factor",
+      "type": "double",
+      "nullable": true,
+      "min": "1.0",
+      "max": "20.0",
+      "nulls": 0
+    },
+    {
+      "name": "share_adj_factor",
+      "type": "double",
+      "nullable": true,
+      "min": "1.0",
+      "max": "20.0",
+      "nulls": 0
+    },
+    {
+      "name": "shares_outstanding_k",
+      "type": "double",
+      "nullable": true,
+      "min": "61525.0",
+      "max": "24568840.0",
+      "nulls": 0
+    },
+    {
+      "name": "ticker",
+      "type": "string",
+      "nullable": true,
+      "min": "AAPL",
+      "max": "XOM",
+      "nulls": 0
+    },
+    {
+      "name": "company_name_pit",
+      "type": "string",
+      "nullable": true,
+      "min": "ADVANCED MICRO DEVICES INC",
+      "max": "WALMART INC",
+      "nulls": 0
+    },
+    {
+      "name": "share_class_code",
+      "type": "int64",
+      "nullable": true,
+      "min": "11",
+      "max": "73",
+      "nulls": 0
+    },
+    {
+      "name": "exchange_code",
+      "type": "int64",
+      "nullable": true,
+      "min": "1",
+      "max": "4",
+      "nulls": 0
+    },
+    {
+      "name": "sic_code_pit",
+      "type": "int64",
+      "nullable": true,
+      "min": "1311",
+      "max": "9999",
+      "nulls": 0
+    },
+    {
+      "name": "naics_code_pit",
+      "type": "string",
+      "nullable": true,
+      "min": "211120",
+      "max": "541511",
+      "nulls": 0
+    },
+    {
+      "name": "cusip_pit",
+      "type": "string",
+      "nullable": true,
+      "min": "00790310",
+      "max": "93114210",
+      "nulls": 0
+    },
+    {
+      "name": "close_is_quote_midpoint",
+      "type": "bool",
+      "nullable": true,
+      "min": "False",
+      "max": "False",
+      "nulls": 0
+    },
+    {
+      "name": "adj_open",
+      "type": "double",
+      "nullable": true,
+      "min": "10.971",
+      "max": "957.77002",
+      "nulls": 0
+    },
+    {
+      "name": "adj_high",
+      "type": "double",
+      "nullable": true,
+      "min": "11.735",
+      "max": "972.53003",
+      "nulls": 0
+    },
+    {
+      "name": "adj_low",
+      "type": "double",
+      "nullable": true,
+      "min": "10.812999999999999",
+      "max": "951.58008",
+      "nulls": 0
+    },
+    {
+      "name": "adj_close",
+      "type": "double",
+      "nullable": true,
+      "min": "11.227",
+      "max": "960.02002",
+      "nulls": 0
+    },
+    {
+      "name": "adj_volume",
+      "type": "double",
+      "nullable": true,
+      "min": "995966.0",
+      "max": "1538389630.0",
+      "nulls": 0
+    },
+    {
+      "name": "dollar_volume",
+      "type": "double",
+      "nullable": true,
+      "min": "15543854.95",
+      "max": "111058156884.95999",
+      "nulls": 0
+    },
+    {
+      "name": "vwap_proxy",
+      "type": "double",
+      "nullable": true,
+      "min": "12.11",
+      "max": "3386.7666833333333",
+      "nulls": 0
+    }
+  ],
+  "created_by": "parquet-cpp-arrow version 19.0.0",
+  "method": "remote Parquet footer; min/max/null counts from row-group statistics"
+}
