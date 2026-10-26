@@ -1,231 +1,107 @@
-# Pre-registered option and equity strategy backtests, 2022–2024
+# Three option-informed equity strategies and a SOFR-anchored portfolio
 
-This project asks a practical question: **which option and equity strategies survive realistic execution on real US market data?**
+This repository backtests three equity strategies on 15 large US stocks from 2022 to 2024, and one way to combine them. Two of the strategies use information from the option market and one uses the earnings calendar. Each was fitted on 2022–2023 and then run once on 2024 as an out-of-sample year. Trades fill at official auction prices and pay a realistic fee schedule.
 
-We test 25 strategy specifications across four research rounds ("waves"). The data are 2022–2024 US option trades with attached quotes, end-of-day option chains, and equity quotes and auction prints for 18 large stocks and ETFs. Each strategy is written down before its out-of-sample data are used. Each is filled with an explicit execution model and charged a realistic fee schedule. We then ask whether a portfolio of the strategies, with idle capital earning SOFR, adds anything over cash.
+The report is [`report/main.pdf`](report/main.pdf) (12 pages).
 
-**Full report:**
-- [`report/main.pdf`](report/main.pdf): 37 pages, one section per strategy.
-- [`report/WRITEUP.md`](report/WRITEUP.md): the same content in Markdown.
+![Cumulative returns](report/figures/fig_core_curves.png)
 
-![Pipeline](wave3/figures/fig00_pipeline.png)
+## The three strategies
 
----
-
-## Findings in brief
-
-1. **No strategy is confirmed.** None of the 25 specifications is both positive out of sample and statistically distinguishable from the best of the trials we ran.
-2. **One lead: option order flow.** Delta-weighted signed option volume predicts next-day stock returns in a 15-name cross-section.
-   - 2024H2 holdout: Sharpe 3.26, Fama–MacBeth t = 2.32.
-   - 2024 test with realistic fees: Sharpe 1.71.
-   - Development periods: Newey–West t of 1.38–1.48 and deflated Sharpe ≤ 0.17.
-   - The signal is gone within a week.
-   - It needs a 2025 sample before anyone trades it.
-3. **Execution cost decides most of these strategies.**
-   - Crossing the spread turned the documented overnight option premium negative: the spread alone is about four times the premium.
-   - Designs that cross once and settle, or trade only in auctions, avoid most of that cost.
-4. **Short-volatility premia were not there at these strikes in 2022–2024.** Realized moves on 28-day SPXW flies matched the implied straddle (mean |settle − K| 164 points against a 163-point straddle).
-5. **The data limit which questions can be asked.** The option tape is a capped, trade-sampled record.
-   - It supports four-leg 0DTE SPXW fills on about 80% of days.
-   - It almost never fills a two-leg straddle at a pre-chosen strike.
-6. **Combining strategies.** With idle capital in SOFR and weights estimated on 2022–2023 only:
-   - A 25%-capped Bayes–Stein Markowitz book earned 3.7–4.7% over SOFR in 2024.
-   - 1/N earned 4.2%.
-   - Every sleeve's 2024 result was known when the combination was designed, so we propose paper-trading it on 2025 data rather than treating this as evidence.
-
----
-
-## How the research was run
-
-| Wave | What was tested | Out-of-sample design |
-|---|---|---|
-| 0 | 72 EOD configurations of credit spreads, condors and debit verticals (SPY, QQQ, SPX) | Fixed 60/20/20 split |
-| 1 | 220 EOD configurations, rolling walk-forward | 6 folds, 375 sessions |
-| 2 | 6 intraday-fillable hypotheses (H1–H6) and 2 foundations (F1 cost atlas, F2 engine check) | 2024H2 holdout tapes downloaded only after the code was frozen |
-| 3 | 10 strategies (S1–S10) with realistic fees | 2024 test year; engines refused later dates until the freeze commit |
-
-**Execution tiers.** Every order uses one of four fills:
-
-| Tier | Fill |
-|---|---|
-| T0 | Cash settlement on the SPX close |
-| T1 | Official opening or closing auction price |
-| T2 | First observed quote after decision time plus latency, within 10 s, size capped at displayed size |
-| T3 | End-of-day bid/ask |
-
-Passive fills are never assumed.
-
-**Decision rule.** A strategy is rejected if any of these holds:
-- its development mean is ≤ 0;
-- its out-of-sample mean is ≤ 0;
-- its result disappears once its five best days are removed.
-
-**Multiple testing.** Romano–Wolf p-values within each family, and deflated Sharpe ratios across all trials.
-
-**What the tape can execute.** Most failed designs failed on fills before economics:
-
-![Fill funnel](wave2/figures/fig01_fill_funnel.png)
-
-**Costs.** Option prints trade inside the quoted spread for SPXW (effective/quoted ratio 0.34–0.57) but near the touch for SPY and QQQ (0.75–0.93):
-
-![Cost atlas](wave2/figures/fig02_cost_atlas.png)
-
-**Engine validation.** The put-write engine tracks the published Cboe PUT index (monthly correlation 0.972, tracking error 2.3% a year):
-
-![Put-write validation](wave2/figures/fig03_putwrite_validation.png)
-
----
-
-## Results across all strategies
-
-![Forest plot of every primary strategy](wave3/figures/fig11_forest_all.png)
-
-Each strategy is shown with its primary (or amended) specification. Returns are annualized excess returns on a $1M reference account.
-
-| Strategy | Dev ann. / Sharpe | Out-of-sample ann. / Sharpe | Decision |
+| Strategy | Idea | 2022–2023 return / Sharpe | 2024 return / Sharpe |
 |---|---|---|---|
-| Waves 0–1: EOD credit spreads, condors, debit verticals | selected on dev | −0.4% to −4.5% | Reject all |
-| H1 0DTE SPXW iron fly held to settlement | −3.1% / −0.79 | +3.0% / 0.75 | Reject |
-| H2 overnight delta-hedged short straddle (amended) | −0.8% / −1.39 | +0.9% / 2.44 | Reject |
-| H3 overnight stock drift via auctions | +4.8% / 0.29 | +28.8% / 2.44 | Reject (top-5 days) |
-| **H4 option order flow → next-day returns** | **+7.8% / 0.90** | **+23.7% / 3.26** | **Lead, not significant** |
-| H5 pre-earnings straddle (amended) | −0.1% / −0.18 | −0.5% / −2.06 | Reject |
-| H6 end-of-day momentum, SPY/QQQ | +0.8% / 0.91 | −0.9% / −1.37 | Reject |
-| S1 pre-earnings premium, beta-hedged | +2.4% / 0.88 | +0.4% / 0.17 | Survives rule, not significant |
-| S2 earnings-announcement-return drift | +3.4% / 0.64 | +12.8% / 1.63 | Survives rule, not significant |
-| S3 option flow with realistic fees, 1-day hold | +8.6% / 0.96 | +12.9% / 1.71 | Exploratory, consistent with H4 |
-| S4 pre-announcement option flow | +2.2% / 0.45 | +0.2% / 0.05 | Exploratory, no effect |
-| S5 SPXW iron fly to settlement, VIX-timed | −3.5% / −1.08 | −8.9% / −1.59 | Reject |
-| S6 realized-minus-implied vol straddles | −2.6% / −0.73 | −6.9% / −0.95 | Reject |
-| S7 0DTE pin at max-OI strike | +1.0% / 0.28 | −0.1% / −0.03 | Exploratory, no pin effect |
-| S8 daytime-reversal frequency | −1.8% / −0.13 | +19.6% / 1.69 | Reject |
-| S9 FOMC pre-announcement drift | +2.3% / 0.53 | −0.9% / −0.25 | Reject |
-| S10 turn of the month | +3.0% / 0.36 | −3.6% / −0.61 | Reject |
+| Option-flow stock selection | Buy stocks with net option buying, short those with net option selling; hold one day | 8.6% / 0.96 | 12.9% / 1.71 |
+| Earnings-announcement drift | Trade in the direction of the stock's reaction to earnings; hold 20 days, hedged with SPY | 3.4% / 0.64 | 12.8% / 1.63 |
+| Pre-earnings premium | Hold the stock for the five sessions before an announcement, hedged with SPY | 2.4% / 0.88 | 0.4% / 0.17 |
 
-### The lead: option order flow
+Returns are annualized returns over cash, after costs, on a $1M account.
 
-The 1-day book holds up out of sample and after realistic fees. The same signal held five days is negative for every flow definition:
+### Option-flow stock selection
 
-![Option-flow decay](wave3/figures/fig15_s3_decay.png)
+Traders with private information often prefer options, so the direction of option trading can predict the stock's next move. Each day we measure net option buying in every stock, weighting each trade by its option's delta. We then rank the stocks and trade at the next morning's opening auction: stocks above the median are bought and those below are shorted, with larger positions for stronger signals. Positions are held for one day. The book is dollar neutral and has almost no market exposure.
 
-### Why the overnight option premium does not pay
+The strategy earned 8.6% a year in 2022–2023 and 12.9% in 2024. The signal is short-lived: held for five days instead of one, the same ranking loses money in both periods.
 
-A delta-hedged short straddle collects +0.18% of premium per night mid-to-mid. Crossing the spread costs 0.76%, and the hedge and fees take another 0.66%:
+![Option-flow signal](report/figures/fig_flow.png)
 
-![H2 decomposition](wave2/figures/fig06_h2_decomposition.png)
+### Earnings-announcement drift and the pre-earnings premium
 
-### Short volatility held to settlement
+Prices tend to under-react to earnings news. The drift strategy measures the stock's return over the announcement window, net of its market exposure. It buys or shorts the stock in that direction at the next open, holds for 20 trading days, and hedges each position with SPY. The average hedged return was 0.50% per event in 2022–2023 (104 events) and 1.55% in 2024 (59 events).
 
-The 28-day SPXW iron fly loses whenever the realized move exceeds about 0.82 of the entry straddle, which happened on most entries:
+Stocks have also tended to rise in the days just before scheduled earnings. The pre-earnings strategy holds stocks for the five sessions before an announcement and exits before the news. It averaged 0.46% per event in 2022–2023 but only 0.06% in 2024, which makes it the weakest of the three.
 
-![S5 realised vs implied](wave3/figures/fig14_s5_vrp.png)
+![Event returns](report/figures/fig_events.png)
 
----
+## The portfolio
 
-## Combining strategies, with idle capital in SOFR
+Each strategy uses only part of its capital at a time, so we combine them in one account and keep all unused capital in SOFR (New York Fed fixings). Weights are set on 2022–2023 data and held through 2024.
 
-How the combination works:
-- **Return:** portfolio return = SOFR accrual + Σ wᵢ × sleeve excess return, with long-only weights and Σ wᵢ ≤ 1.
-- **Cash:** SOFR fixings come from the New York Fed.
-- **Weights:** estimated on 2022–2023, applied to 2024 either statically or re-estimated monthly.
-
-![Allocation 2024](alloc/figures/fig20_alloc_2024.png)
-
-| Rule (2024) | Total return | Excess over SOFR | Sharpe |
+| Rule (2024) | Total return | Return over SOFR | Sharpe |
 |---|---|---|---|
 | SOFR only | 5.40% | 0 | n/a |
-| 1/N | 9.91% | 4.21% | 2.00 |
-| Minimum variance | 5.16% | −0.23% | −0.41 |
-| Markowitz, Bayes–Stein, 25% cap, static | 9.31% | 3.67% | 1.89 |
-| Markowitz, Bayes–Stein, 25% cap, walk-forward | 10.43% | 4.69% | 2.07 |
+| Equal weight | 14.91% | 8.71% | 2.32 |
+| Inverse volatility | 11.94% | 6.07% | 2.00 |
+| Markowitz (50% cap) | 12.55% | 6.62% | 1.94 |
 
-**Reading the table.**
-- Minimum variance piles into the smallest, lowest-volatility sleeves and earns about SOFR.
-- Shrinkage Markowitz puts 25% each on H6 and S1 and 13–15% on S2, S3 and S9.
-- One year cannot separate these rules (Sharpe standard error ≈ 1).
+![Portfolio](report/figures/fig_portfolio.png)
 
-**Proposal** (report Section 7): freeze the rule and paper-trade it on 2025 data. Allocate a small live risk budget only if that pre-registered gate passes.
+We propose the equal-weight portfolio, the rule with the fewest estimated inputs, and a staged start. First, run it unchanged on 2025 data. Then, only if it beats SOFR after costs with a drawdown under 2%, allocate a small risk budget.
 
----
+## How much to trust this
+
+The evidence is suggestive, not conclusive. In 2022–2023 the $t$-statistics are 1.38, 0.87 and 1.08, all below conventional significance. We also chose these three strategies after testing 25, partly on their 2024 results. That makes the portfolio's 2024 numbers optimistic, although each strategy's own rules were fixed before 2024. The universe is small, with about 12 tradeable names a day, and the option data are a sample of all trades.
+
+We dropped the other strategies we tested: option-premium selling, overnight and end-of-day effects, and calendar effects. Most either paid away their edge in bid–ask spreads or were positive in one period and negative in the other. The report's appendix lists them, and their full records are in `wave2/`, `wave3/` and `reports/`.
 
 ## Repository layout
 
 | Path | Contents |
 |---|---|
-| `report/` | LaTeX source, compiled `main.pdf`, `WRITEUP.md` |
-| `src/options_lab/`, `wave01/`, `tests/` | Waves 0–1: Python EOD engine, fixed-split and rolling studies, earnings study, C++ reconciliation of the rolling study (64 tests) |
-| `wave2/` | Wave 2: download and reduction (`fetch*.sh`, `extract.py`, `context.py`), C++ engines (`cpp/`), inference (`analysis.py`, `scorecard.py`), pre-registration, results, notebook, figures |
-| `wave3/` | Wave 3: inputs (`context3.py`), C++ engines with realistic fees, `scorecard3.py`, pre-registration, results, notebook, figures |
-| `alloc/` | Allocation across sleeves with SOFR cash: script, weights, sleeve statistics, daily portfolio returns, notebook, figures |
+| `report/` | Report source (`main.tex`, one file per strategy), `main.pdf`, figures and the notebook that draws them |
+| `wave3/` | Engines for the three strategies (`cpp/s3_flow.cpp`, `cpp/s_events.cpp`) and the other wave-3 strategies, `scorecard3.py`, pre-registration, results, notebook, figures |
+| `alloc/` | Portfolio construction with SOFR cash: `allocate.py` (all sleeves; `core3` for the three-strategy portfolio), weights, daily returns, notebooks, figures |
+| `wave2/` | Data download and reduction (`fetch*.sh`, `extract.py`, `context.py`), the shared C++ library (`cpp/common.hpp`, `cpp/equity.hpp`), the earlier option-flow test, other wave-2 strategies |
+| `src/options_lab/`, `wave01/`, `tests/` | Earlier end-of-day option-spread studies (64 tests) |
+| `data/` | Context tables and normalized end-of-day option panels (`quotes_SPX.parquet` via Git LFS) |
+| `reports/` | Dataset audit, file manifest with download links, data dictionary, earlier study reports |
 | `research_style.py` | Shared figure style |
-| `data/` | Context tables, normalized EOD option panels (`quotes_SPX.parquet` via Git LFS) |
-| `reports/` | Wave 0–1 reports and outputs, dataset audit, file manifest with download links and byte counts, data dictionary |
 
 ## Data
 
-**Included:**
-- `data/raw/context/` (21 MB);
-- `data/normalized/` (326 MB);
-- `wave2/extracts/` (534 MB): every reduced input the engines read;
-- `wave2/external/`: Cboe PUT index and SOFR.
+The repository includes `data/raw/context/` (21 MB), `data/normalized/` (326 MB), `wave2/extracts/` (534 MB, every reduced input the engines read) and `wave2/external/` (Cboe PUT index and SOFR).
 
-**Not included**, because of size (re-download with byte-count checks against `reports/dataset_audit/file_manifest.csv`):
-- option and equity tapes, about 27 GB: `wave2/fetch_dev.sh`, `wave2/fetch_holdout.sh`;
-- EOD option chains, 2.4 GB: `./fetch_eod_chain.sh`.
+Two raw datasets are too large to include. The option and equity tapes (about 27 GB) download with `wave2/fetch_dev.sh` and `wave2/fetch_holdout.sh`. The end-of-day option chains (2.4 GB) download with `./fetch_eod_chain.sh`. Both scripts check each file's byte count against `reports/dataset_audit/file_manifest.csv`. The market data come from a third-party vendor extract and remain subject to that provider's terms.
 
 ## Running it
 
-Setup:
+Set up the environment:
 ```bash
 uv venv .venv && uv pip install -r requirements.txt
 ```
 
-Steps 2–5 need only the included data. Steps 1 and 7 need the downloads above.
+Reproduce the three strategies, the portfolio and the report from the included data:
+```bash
+.venv/bin/python -I wave3/context3.py
+W3_END=20241231 wave3/cpp/build_and_run.sh && .venv/bin/python wave3/scorecard3.py
+.venv/bin/python alloc/allocate.py core3
+.venv/bin/python -m jupyter nbconvert --to notebook --execute --inplace report/figures_core.ipynb
+cd report && tectonic -X compile main.tex
+```
 
-1. Optional: rebuild the extracts from raw tapes.
-   ```bash
-   wave2/fetch_dev.sh && wave2/fetch_holdout.sh && wave2/run_extracts.sh
-   ```
-2. Wave-2 engines, then the decision rules.
-   ```bash
-   wave2/cpp/build_and_run.sh && .venv/bin/python wave2/scorecard.py
-   ```
-3. Wave-3 inputs, engines over the full sample, then the decision rules.
-   ```bash
-   .venv/bin/python -I wave3/context3.py
-   W3_END=20241231 wave3/cpp/build_and_run.sh && .venv/bin/python wave3/scorecard3.py
-   ```
-4. Allocation across sleeves.
-   ```bash
-   .venv/bin/python alloc/allocate.py
-   ```
-5. Notebooks: figures and tables.
-   ```bash
-   .venv/bin/python -m jupyter nbconvert --to notebook --execute --inplace \
-     wave2/notebooks/wave2_report.ipynb wave3/notebooks/wave3_report.ipynb alloc/notebooks/allocation_report.ipynb
-   ```
-6. Report.
-   ```bash
-   cd report && tectonic -X compile main.tex
-   ```
-7. Waves 0–1, run from the repository root.
-   ```bash
-   ./fetch_eod_chain.sh && .venv/bin/python src/options_lab/normalize.py && .venv/bin/python src/options_lab/normalize.py --single
-   .venv/bin/python wave01/run_grid.py && .venv/bin/python wave01/final_eval.py && .venv/bin/python wave01/run_rolling_research.py
-   ```
+Rebuild the reduced data from raw tapes (needs the downloads above):
+```bash
+wave2/fetch_dev.sh && wave2/fetch_holdout.sh && wave2/run_extracts.sh
+```
 
-The C++ engines need only `clang++` with `-std=c++17` (wave 2) or `-std=c++20` (wave 3); there are no external libraries.
+The engines need only `clang++` (`-std=c++20`), with no external libraries. The other studies run with `wave2/cpp/build_and_run.sh` and `wave2/scorecard.py`, `alloc/allocate.py`, and the scripts in `wave01/` run from the repository root.
 
 ## Outputs
 
-| Wave | Outputs |
+| Item | Location |
 |---|---|
-| Wave 2 | `wave2/results/`: trades and daily returns per strategy, `decisions.csv`, `scorecard_*.csv` |
-| Wave 3 | `wave3/results/`: trades and daily returns per engine, `decisions3.csv`, `scorecard3_*.csv` |
-| Allocation | `alloc/*.csv` |
-| Waves 0–1 | `reports/` (trade blotter, daily portfolio, `rolling_research/`, scorecards) |
-| Figures | `wave2/figures/`, `wave3/figures/` and `alloc/figures/`, each with `figure_notes.md` describing the data checks behind every figure |
+| Strategy results (trades and daily returns) | `wave3/results/` (`s3_*`, `s_events_*`), with the decision tables in `decisions3.csv` and `scorecard3_*.csv` |
+| Portfolio results | `alloc/core3/` (three strategies) and `alloc/` (all sleeves) |
+| Report figures | `report/figures/`, drawn by `report/figures_core.ipynb` |
+| Records of the other strategies | `wave2/results/`, `wave3/results/`, `reports/` |
 
-## Licence and data
-
-The code is provided for research use. The market data come from a third-party vendor extract and remain subject to that provider's terms. Bibliographic details in the report should be checked against the published versions before citing.
+The code is provided for research use. Check the bibliographic details in the report against the published versions before citing.

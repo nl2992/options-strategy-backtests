@@ -4,41 +4,27 @@
 \usepackage{lmodern}
 \usepackage{amsmath,amssymb}
 \usepackage{graphicx}
-\usepackage{booktabs,longtable,tabularx,array}
+\usepackage{booktabs,tabularx,array}
 \usepackage{enumitem}
 \usepackage{xcolor}
 \usepackage[font=small,labelfont=bf]{caption}
 \usepackage[authoryear,round]{natbib}
 \usepackage{subfiles}
+\usepackage{float}
 \usepackage[colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!50!black]{hyperref}
 \usepackage{url}
 
 \setlist{nosep,leftmargin=1.4em}
-\setlength{\parskip}{3pt}
+\setlength{\parskip}{4pt}
 \setlength{\emergencystretch}{2em}
-\setcounter{secnumdepth}{3}
-
-% ---------- helper macros ----------
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
-\newcommand{\ie}{i.e.}
-\newcommand{\nw}{\textit{t}_{\mathrm{NW}}}
-\newcommand{\DSR}{\mathrm{DSR}}
-% Figure helper: \Fig{wave}{file}{caption}{label}. Searches the paths relative to
-% report/ (main build) and report/strategies/ (standalone build). A missing file is
-% skipped with a log message so that the build does not fail.
-\newcommand{\figbody}[2]{\begin{figure}[tbp]\centering
-  \includegraphics[width=\linewidth,height=0.42\textheight,keepaspectratio]{\figp}%
-  \caption{#1}\label{#2}\end{figure}}
-\newcommand{\Fig}[4]{%
-  \IfFileExists{../#1/figures/#2}{\def\figp{../#1/figures/#2}\figbody{#3}{#4}}{%
-  \IfFileExists{../../#1/figures/#2}{\def\figp{../../#1/figures/#2}\figbody{#3}{#4}}{%
-  \typeout{WARNING: figure #1/figures/#2 not found; skipped}}}}
-% Reference to a figure if its label exists, else give the file name.
-\newcommand{\figref}[2]{\ifcsname r@#1\endcsname Figure~\ref{#1}\else\path{#2}\fi}
-% Typeset a source-file path.
-\newcommand{\file}[1]{\path{#1}}
 
-\title{Pre-registered backtests of option and equity strategies on trade-sampled US market data, 2022--2024}
+% \Fig{path relative to report/}{caption}{label}; also resolves from report/strategies/ when a section is compiled alone.
+\newcommand{\figbody}[3]{\begin{figure}[tbp]\centering
+  \includegraphics[width=\linewidth,height=0.40\textheight,keepaspectratio]{#1}\caption{#2}\label{#3}\end{figure}}
+\newcommand{\Fig}[3]{\IfFileExists{#1}{\figbody{#1}{#2}{#3}}{\IfFileExists{../#1}{\figbody{../#1}{#2}{#3}}{\typeout{WARNING: #1 not found}}}}
+
+\title{Three option-informed equity strategies\\and a SOFR-anchored portfolio\\[6pt]\large Backtests on US market data, 2022--2024}
 \author{Yutong Han}
 \date{\today}
 
@@ -46,291 +32,116 @@
 \maketitle
 
 \begin{abstract}
-\noindent We report pre-registered backtests of option and equity strategies on one dataset: US option trades with attached NBBO, end-of-day (EOD) option chains, equity quotes around the open and close, and auction prints for 18 large US equities and ETFs, from 2022-01-03 to 2024-12-31. Four rounds of research cover 25 strategy specifications. Each strategy was written down before its out-of-sample data was used, filled at a declared execution tier, and charged a realistic fee schedule. None clears a confirmatory bar, which we define as an out-of-sample result that is also statistically distinguishable from the best of many trials.
-
-One lead remains. Delta-weighted option order flow predicts next-day stock returns. In the wave-2 2024H2 holdout (H4) the long-short book has Sharpe 3.26 and a Fama--MacBeth $t = 2.32$. In the wave-3 2024 test with realistic fees (S3, 1-day hold) the Sharpe ratio is 1.71. The development periods give Newey--West $t = 1.48$ (wave 2) and $1.38$ (wave 3), with deflated Sharpe ratios of at most 0.17. The signal needs a 2025 sample before anyone trades it.
-
-The option tape is a capped, trade-sampled record. It supports four-leg 0DTE SPXW fills on about 80\% of days, but it almost never fills a two-leg straddle at a pre-chosen strike. Several textbook strategies are therefore not testable on this data, independent of their economics.
-
-We also combine the 13 primary sleeves, with undeployed capital earning SOFR and weights estimated on 2022--2023 only. In 2024 a Bayes--Stein Markowitz book capped at 25\% per sleeve earns 3.67\% over SOFR (static weights; Sharpe 1.89), and 1/N earns 4.21\% (Sharpe 2.00). Every sleeve's 2024 outcome was known when the allocation study was designed, so we treat these figures as the basis for a paper-trading proposal (Section~\ref{sec:alloc}), not as evidence.
+\noindent We backtest three equity strategies built from option-market and earnings information on 15 large US stocks, using 2022--2023 to fit and 2024 as an out-of-sample year. Trades fill at official auction prices and pay a realistic fee schedule. Option-flow stock selection, which buys stocks with net option buying and sells stocks with net option selling, earned 8.6\% a year over cash in 2022--2023 and 12.9\% in 2024 (Sharpe ratios 0.96 and 1.71). Earnings-announcement drift, which trades in the direction of the market's reaction to an earnings release, earned 3.4\% and 12.8\%. A pre-earnings premium strategy earned 2.4\% in 2022--2023 and 0.4\% in 2024. An equal-weight portfolio of the three, with idle capital earning SOFR, returned 14.91\% in 2024 against 5.40\% for SOFR alone. None of these results is statistically strong: the fitting-period $t$-statistics are below 2, and the three strategies were chosen from a longer list partly on their 2024 results. We therefore propose paper trading the portfolio on 2025 data before committing capital.
 \end{abstract}
 
-% =====================================================================
-\section{Introduction and overview of potential strategies}\label{sec:intro}
+\section{Introduction}\label{sec:intro}
 
-This study asks which option and equity strategies survive realistic execution on a three-year sample of US market data. The data are described in Section~\ref{sec:data}. The research ran in four rounds (``waves''), and each later wave was designed after seeing the failures of the earlier ones (Section~\ref{sec:protocol}). We tested 25 strategy specifications in total. We describe them here by family, with the economic reason each family might work.
-
-\paragraph{Variance-risk-premium harvesting.}
-Index options carry a variance risk premium, meaning that option-implied variance exceeds subsequently realized variance on average \citep{carr2009,bollerslev2009}. Defined-risk short-premium structures, such as credit spreads, iron condors and iron flies, might collect part of that premium. Waves 0 and 1 tested EOD put and call credit spreads, condors and debit verticals on SPY, QQQ and SPX (Section~\ref{sec:w01}). Wave 2 moved to same-day (0DTE) SPXW options, which may embed a premium paid by retail traders and hedgers for convexity \citep{bandi2023,beckmeyer2023,vilkov2023} (H1, Section~\ref{sec:h1}). Wave 3 added a 28-day SPXW iron fly timed by the VIX term structure \citep{johnson2017} (S5, Section~\ref{sec:s5}) and straddles sorted on realized minus implied volatility \citep{goyal2009} (S6, Section~\ref{sec:s6}). A 0DTE pin test (S7, Section~\ref{sec:s7}) asks whether hedging of large open interest pulls the index toward one strike \citep{ni2005}.
-
-\paragraph{Option-implied information.}
-Informed traders use options for leverage and concealment, so option order flow and implied-volatility asymmetries can lead stock prices \citep{easley1998,pan2006,cremers2010,xing2010,johnsonso2012}. We measure this with delta-weighted signed option volume. The signal feeds a cross-sectional long-short stock book (H4 and S3, Section~\ref{sec:h4}) and a pre-announcement test (S4, Section~\ref{sec:s4}).
-
-\paragraph{Earnings-event strategies.}
-Implied volatility rises into scheduled earnings, and stocks earn higher returns in the days before them \citep{gaoxing2018,frazzini2007,barber2013}. After the announcement, prices may under-react to the news \citep{brandt2008,chan1996}. We test a pre-earnings straddle (H5, Section~\ref{sec:h5}), a pre-earnings stock premium (S1, Section~\ref{sec:s1}) and post-announcement drift (S2, Section~\ref{sec:s2}).
-
-\paragraph{Overnight, intraday and calendar effects.}
-A large share of the equity premium may accrue overnight \citep{lou2019,cliff2008}, and delta-hedged option returns may change sign between night and day \citep{muravyevni2020,jones2018}. Late-day order flow may push the day's move further into the close \citep{gaohan2018,baltussen2021}. We test an overnight short straddle (H2, Section~\ref{sec:h2}), an overnight equity drift (H3, Section~\ref{sec:h3}), end-of-day momentum (H6, Section~\ref{sec:h6}), daytime reversals \citep{akbas2022} (S8, Section~\ref{sec:s8}), the pre-FOMC drift \citep{lucca2015} and the turn-of-the-month effect \citep{ariel1987,lakonishok1988} (S9 and S10, Section~\ref{sec:s9}).
-
-\paragraph{Design rules we learned.}
-Three rules shaped the later waves.
-\begin{enumerate}
-\item \emph{Cross the spread once, or not at all.} Spread crossing turned the documented overnight option premium negative (H2): the spread alone was about four times that premium. Designs that cross once and settle (H1, S5), or that trade only in auctions (H3, H4, S1--S3, S8--S10), remove most of that cost.
-\item \emph{Longer maturities cost less relative to premium.} At 8--30 days to expiry (DTE), crossing the spread once costs about 0.6\% of premium, against about 8\% for a 0DTE round trip (F1, Section~\ref{sec:f1f2}).
-\item \emph{Breadth and sample length determine power.} With three years of data the standard error of an annualized Sharpe ratio is about 0.6, so only strategies with Sharpe $\gtrsim 1.2$ can be confirmed at 5\%. Event and cross-sectional designs gain power from breadth, but a 15-name universe limits that gain.
-\end{enumerate}
-
-% =====================================================================
-\section{Data and execution realism}\label{sec:data}
-
-The supplied folder has 21 datasets (88.5 GB, 4.74 billion rows; the audit is in \file{reports/dataset_audit/ASSESSMENT.md}). Table~\ref{tab:data} lists the datasets used and their roles.
-
-\begin{table}[tbp]
-\centering\small
-\caption{Datasets and their role in the backtests.}\label{tab:data}
-\begin{tabularx}{\linewidth}{@{}l Y Y@{}}
-\toprule
-Dataset & Content & Role here \\
-\midrule
-EOD option chain & bid/ask, IV, Greeks, OI for 20 underlyings & Daily signals; T3 fills; daily marks \\
-Option trades + NBBO & every sampled print with the prevailing bid/ask and sizes & T2 fills, effective spreads, signed order flow \\
-Equity NBBO & quotes 09:29--09:35 and 15:55--16:01 for 17 names (no GOOGL) & Stock hedges and entries near the open and close \\
-Equity auction-window trades & prints around the opening and closing crosses & T1 auction fills \\
-Context & daily equity OHLC, factors, rates, VIX, earnings dates, fundamentals & Signals, corporate actions, benchmarks \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-\subsection{Fill tiers}
-Every backtest declares how each order is filled (Table~\ref{tab:tiers}). Passive fills are never assumed. For multi-leg orders, every leg must fill under T2 or the trade is skipped, and skips are counted.
-
-\begin{table}[tbp]
-\centering\small
-\caption{Fill tiers T0--T3.}\label{tab:tiers}
-\begin{tabularx}{\linewidth}{@{}l Y Y@{}}
-\toprule
-Tier & Mechanism & Used for \\
-\midrule
-T0 & Cash settlement on the SPX close (SPXW PM only) & Option exits held to expiry \\
-T1 & Official opening or closing cross price & Stock entries and exits \\
-T2 & First observed NBBO strictly after decision time $+$ latency, within 10 s; buy at the ask, sell at the bid; size $\le$ displayed & Intraday option and stock orders \\
-T3 & EOD bid/ask (buy ask, sell bid) & Daily option strategies \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-In the T2 rule, the decision time is $\tau$ and the latency is $L$. The wave-2 pre-registration sets $L = 2$ s as primary, with $0.5$ s and $10$ s as sensitivities. A T1 auction fill also requires participation of at most 1\% of the trailing-20-session median print size.
-
-\subsection{Measured data facts}
-The following facts were measured before the designs were written, and they shaped them.
+This report covers three strategies and one way to combine them. All three trade stocks, and two of them use information from the option market.
 \begin{itemize}
-\item \textbf{Clock.} The option tape is in US/Eastern time. SPY option prints start at 09:30:00.
-\item \textbf{Capped sample.} The tape holds about 500,000 prints per day for SPY, QQQ and TSLA, and SPY options are missing on 193 of 625 development days. In a 10-second window only 30--45 SPY contracts and 3--30 contracts per single name show a print, so quotes are visible only at sampled prints. Flow signals therefore use ratios, never levels.
-\item \textbf{Effective versus quoted spreads.} SPXW prints well inside the quoted spread (effective/quoted half-spread ratio 0.57 at 0DTE ATM and 0.34 at 8--30 DTE). SPY and QQQ print near the touch (0.75--0.93); see \figref{fig:cost}{fig02_cost_atlas.png}.
-\item \textbf{Auction data.} Closing-cross prints equal the official daily close on 100\% of tested days. XOM and LLY usually lack a primary-exchange cross, and GOOGL has no equity quote or auction data.
-\item \textbf{Share-class mixing.} The field \texttt{sym\_root} mixes share classes. JPM preferred shares near \$20 appear in both the JPM quote stream and the auction prints, and both are filtered.
-\item \textbf{EOD snapshot time.} EOD chain quotes match the tape's last NBBO before 16:00 or 16:15 only 7--21\% of the time, so the snapshot time cannot be determined.
+  \item \textbf{Option-flow stock selection} (Section~\ref{sec:flow}). Traders with private information often prefer options. When option buying in a stock outweighs option selling, the stock tends to rise the next day. We buy the stocks with the most net option buying and short those with the most net selling.
+  \item \textbf{Earnings-announcement drift} (Section~\ref{sec:drift}). Prices tend to under-react to earnings news. We trade in the direction of the stock's reaction to an announcement and hold for 20 trading days.
+  \item \textbf{Pre-earnings premium} (Section~\ref{sec:pre}). Stocks have tended to earn more in the days just before scheduled earnings. We hold stocks for the five sessions before an announcement and sell before the news.
 \end{itemize}
 
-\Fig{wave2}{fig01_fill_funnel.png}{Share of intended trades that fill, by wave-2 design (\texttt{wave2/figures/fig01\_fill\_funnel.png}). Fill availability, not the signal, limits several designs.}{fig:funnel}
-\Fig{wave2}{fig02_cost_atlas.png}{Execution-cost atlas: effective against quoted spreads by underlying, days to expiry and time of day (\texttt{wave2/figures/fig02\_cost\_atlas.png}).}{fig:cost}
+Section~\ref{sec:portfolio} combines the three. Each strategy uses only part of its capital at a time, so the portfolio places all unused capital in SOFR, the overnight secured funding rate published by the New York Fed. Section~\ref{sec:limits} sets out what the evidence can and cannot support.
 
-\subsection{Transaction costs}
-Wave 2 used placeholder option fees. Wave 3 uses a realistic schedule (Table~\ref{tab:costs}), which should be verified against a broker statement. Fees follow a public schedule, not executed broker statements.
+These three strategies are what remained from a longer search. We tested 25 strategy specifications on the same data, including several option-premium strategies, and Appendix~\ref{app:other} summarizes the ones we dropped. Appendix~\ref{app:impl} describes the implementation.
 
-\begin{table}[tbp]
-\centering\small
-\caption{Wave-3 transaction-cost schedule.}\label{tab:costs}
-\begin{tabularx}{\linewidth}{@{}l Y@{}}
+\section{Data, trading rules and costs}\label{sec:data}
+
+\paragraph{Data.} The sample runs from 2022-01-03 to 2024-12-31 (753 trading days). The universe is 15 large US stocks with listed options: AAPL, AMD, AMZN, AVGO, CRM, GOOGL, JPM, LLY, MSFT, NFLX, NVDA, TSLA, UNH, WMT and XOM. We use four sources:
+\begin{itemize}
+  \item intraday option trades, each with the prevailing best bid and offer;
+  \item end-of-day option chains, with implied volatility, delta and open interest;
+  \item equity prints from the opening and closing auctions;
+  \item daily stock data, including split and dividend adjustments, and earnings announcement dates and times.
+\end{itemize}
+SPY, the S\&P 500 ETF, is used for hedging. SOFR fixings come from the New York Fed.
+
+\paragraph{How trades fill.} All three strategies trade stocks only, at two kinds of price.
+\begin{itemize}
+  \item \textbf{Closing trades} fill at the official closing price, which equals the closing-auction print on every day we checked.
+  \item \textbf{Opening trades} fill at the primary exchange's opening-auction price. If that print is missing, the order fills at the same day's close.
+\end{itemize}
+Auction trades do not cross a bid--ask spread, so the main costs are fees and borrowing. A strategy starts with a \$1M account. Idle cash earns the 1-month Treasury bill rate inside each strategy; the portfolio in Section~\ref{sec:portfolio} uses SOFR instead.
+
+\paragraph{Costs.} Table~\ref{tab:fees} lists the costs charged on every trade.
+\begin{table}[ht]\centering\small
+\caption{Transaction costs charged in every backtest.}\label{tab:fees}
+\begin{tabular}{ll}
 \toprule
 Item & Cost \\
 \midrule
-Option commission & \$0.65 per contract per side \\
-SPX/SPXW exchange + OCC + ORF & \$0.66 + \$0.025 + \$0.003 per contract \\
-Other option taker fees & \$0.50 + \$0.028 per contract \\
-Stock & \$0.0035 commission + \$0.0002 clearing + \$0.0010 auction fee per share \\
-Sells & SEC fee \$27.80 per \$1M, FINRA TAF \$0.000166 per share (capped at \$8.30 per trade) \\
-Borrow & 0.40\% per year on short notional \\
+Commission and clearing & \$0.0035 + \$0.0002 per share \\
+Auction exchange fee & \$0.0010 per share \\
+SEC fee on sales & \$27.80 per \$1M sold \\
+FINRA trading activity fee on sales & \$0.000166 per share, capped at \$8.30 per trade \\
+Borrowing cost on short positions & 0.40\% a year \\
 \bottomrule
-\end{tabularx}
+\end{tabular}
 \end{table}
 
-% =====================================================================
-\section{Research protocol}\label{sec:protocol}
+\paragraph{How we judge the results.} We fix each strategy's rules using 2022--2023, the \emph{fitting period}, and evaluate them once on 2024, the \emph{out-of-sample year}. The 2024 run used code that was committed before 2024 data entered the simulation. We report annualized return in excess of cash, the Sharpe ratio, and a Newey--West $t$-statistic \citep{neweywest1987}. For event strategies we also report the average return per event. Three years of data is short: an annualized Sharpe ratio estimated over one year has a standard error of about 1, so differences between strategies of that size are not meaningful.
 
-\subsection{Waves}
-Table~\ref{tab:waves} summarizes the four waves. Out-of-sample data were withheld from the engines until a freeze commit in git.
+Figure~\ref{fig:curves} shows the cumulative returns of the three strategies and of their equal-weight combination.
 
-\begin{table}[tbp]
-\centering\small
-\caption{Research waves and out-of-sample designs.}\label{tab:waves}
-\begin{tabularx}{\linewidth}{@{}c Y Y@{}}
-\toprule
-Wave & Design & Out-of-sample \\
-\midrule
-0 & 72 EOD configurations (verticals, condors) on SPY/QQQ/SPX, fixed 60/20/20 split & 2024-06 to 2024-12 test \\
-1 & 220 EOD configurations, rolling 252/63-session walk-forward & 6 folds, 375 sessions \\
-2 & 6 intraday-fillable hypotheses (H1--H6) and 2 foundations (F1, F2) & 2024-07 to 2024-12; tapes not downloaded until the freeze commit \texttt{d35c50e} \\
-3 & 10 strategies (S1--S10), realistic fees & 2024 test year; engines refused dates after 2023-12-31 until the freeze commit \texttt{e127299} \\
-\bottomrule
-\end{tabularx}
-\end{table}
+\Fig{figures/fig_core_curves.png}{Cumulative return over cash for the three strategies and their equal-weight portfolio, 2022--2024. The shaded band is the 2024 out-of-sample year.}{fig:curves}
 
-For waves 2 and 3 the development and test periods are as follows. Wave 2 uses development 2022-01-03 to 2024-06-28 and a holdout from 2024-07-01 to 2024-12-31. Each primary specification runs once on the holdout, with no changes. In wave 3 the confirmatory strategies (S1, S2, S5, S6, S8, S9, S10) use development 2022-01-03 to 2023-12-29 and a test year of 2024. The exploratory strategies (S3, S4, S7) were derived from wave-2 results (H4 and H1), run on the full 2022--2024 sample, and cannot be confirmed here.
-
-\subsection{Pre-registration and amendments}
-Each strategy was written down before its engine ran, in the order economic intuition, signal, portfolio construction, execution (fill tier), risk, evaluation (\file{wave2/prereg/PREREGISTRATION.md}, \file{wave3/PREREGISTRATION.md}). Each strategy has one primary specification. Secondary variants are reported and corrected for multiplicity.
-
-Changes made after a run are dated in the pre-registration files with the reason.
-\begin{itemize}
-\item Amendments A1--A4 (wave 2) respond only to measured fill availability. For example, chosen-strike straddles filled on about 1\% of nights.
-\item Amendment B1 (wave 3) changes the denominator of one per-trade test (S5). It was made after seeing development totals and is disclosed as such.
-\item The original specifications are always reported alongside the amended ones.
-\end{itemize}
-
-The wave-3 test year is not a virgin holdout. Wave-2 results on 2024 had been seen, though none of the wave-3 signals had been computed on that year. S8 is closest to wave-2 H3 and is marked ``partially informed''.
-
-\subsection{Inference}
-\begin{itemize}
-\item Newey--West $t$-statistics with 5 lags \citep{neweywest1987} and stationary block-bootstrap confidence intervals with mean block length 10 \citep{politis1994}, using 5,000 draws.
-\item Event returns are clustered by date. Cross-sections use Fama--MacBeth regressions \citep{famamacbeth1973}.
-\item Romano--Wolf stepdown $p$-values \citep{romano2005} are computed within each strategy family.
-\item Deflated Sharpe ratios \citep{bailey2014} are computed against all 88 wave-2 and wave-3 variants. Waves 0 and 1 add 292 earlier trials, so the true multiplicity is higher still \citep[see also][]{harvey2016}.
-\end{itemize}
-
-\subsection{Kill rule}
-A primary is rejected if any of the following holds:
-\begin{enumerate}
-\item its development mean is $\le 0$;
-\item its out-of-sample mean is $\le 0$;
-\item its development result disappears once the five best days are removed.
-\end{enumerate}
-Surviving the kill rule is necessary, not sufficient. A result would be called ``confirmed'' only with a deflated Sharpe ratio near 1 and a Romano--Wolf $p < 0.05$. Nothing here meets that.
-
-\subsection{What 2022--2024 can detect}
-With three years of data the standard error of an annualized Sharpe ratio is about 0.6. Only strategies with Sharpe $\gtrsim 1.2$ can therefore be confirmed at 5\%. Event and cross-sectional designs gain power from breadth, and the 15-name universe limits that gain.
-
-% =====================================================================
-\section{Implementation}\label{sec:impl}
-
-\Fig{wave3}{fig00_pipeline.png}{Research pipeline from vendor tapes to engines, inference and figures (\texttt{wave3/figures/fig00\_pipeline.png}).}{fig:pipeline}
-
-Engines are C++17/20 (\file{wave2/cpp}, \file{wave3/cpp}). Inference is in Python (\file{wave2/analysis.py}). Figures and tables live in executed notebooks (\file{wave2/notebooks}, \file{wave3/notebooks}). Table~\ref{tab:layout} gives the code layout.
-
-\begin{table}[tbp]
-\centering\small
-\caption{Code layout.}\label{tab:layout}
-\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{0.46\linewidth} Y@{}}
-\toprule
-Path & Role \\
-\midrule
-\file{wave2/fetch.sh}, \file{fetch_dev.sh}, \file{fetch_holdout.sh} & Manifest-driven Dropbox download with byte-count verification \\
-\file{wave2/extract.py} & DuckDB reduction: decision-time quote snapshots, auction crosses, flow, cost atlas \\
-\file{wave2/context.py} & Small daily inputs (sessions, equity, earnings, H4 signals, GEX, F2 chain) \\
-\file{wave2/cpp/common.hpp} & CSV loader, sessions, T2 snapshot lookup, parity forward, Black--Scholes, ledger \\
-\file{wave2/cpp/equity.hpp} & Auction crosses (validated against official open/close), corporate actions \\
-\file{wave2/cpp/{f2,h1..h6}_*.cpp} & One engine per strategy: signal, portfolio, execution, accounting \\
-\file{wave2/analysis.py}, \file{scorecard.py} & Inference and pre-registered decisions \\
-\file{wave2/notebooks/wave2_report.ipynb}, \file{figures/} & Report notebook and figures \\
-\file{wave3/context3.py} & SPXW and single-name chains, OI, flow measures, VIX \\
-\file{wave3/cpp/w3.hpp} & Realistic fees, \texttt{W3\_END} guard, beta, mark-to-market stock book \\
-\file{wave3/cpp/{s_events,s3_flow,s5_spxw_vix,s6_straddle_gs,s7_pin,s_calendar}.cpp} & Wave-3 engines \\
-\file{wave3/scorecard3.py}, \file{notebooks/wave3_report.ipynb}, \file{figures/} & Scorecard, notebook, figures \\
-\file{src/options_lab/}, \file{wave01/} & Waves 0 and 1 (Python EOD engine, 64 tests) \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-\subsection{Snapshots, forward and strike selection}
-For a decision time $\tau$ and latency $L$, \file{extract.py} stores two quotes per contract $c$:
-\begin{align}
-q^{\mathrm{info}}_c &= \text{last quote in } [\tau - 120\,\mathrm{s},\, \tau), \label{eq:info}\\
-q^{\mathrm{fill}}_c &= \text{first quote in } [\tau + L,\, \tau + L + 10\,\mathrm{s}]. \label{eq:fill}
-\end{align}
-The first is information known at $\tau$. The second is the T2 fill quote. Latency is run at $L \in \{0.5\,\mathrm{s}, 2\,\mathrm{s}, 10\,\mathrm{s}\}$, and a 120 s ``chase'' window is stored for the amended exits.
-
-Strikes use the put--call-parity forward, so no spot feed is needed for SPX:
-\begin{equation}
-F = K^{*} + C - P, \qquad K^{*} = \arg\min_K \, |C_K - P_K|, \label{eq:forward}
-\end{equation}
-where $C$ and $P$ are call and put mids at the strike $K^{*}$, taken from the pre-decision quotes in \eqref{eq:info}.
-
-\subsection{Accounting}
-Each strategy runs a \$1M reference account per variant, and idle cash earns the 1-month T-bill. Stock positions (wave 3) are marked to the official close each day. Option positions are marked to the EOD mid and realized at settlement or exercise. Reported returns are daily excess returns.
-
-\subsection{Checks}
-\begin{itemize}
-\item \textbf{Unit self-checks.} The payoff identities, implied-volatility round-trips and statistical routines each carry an assert.
-\item \textbf{Accounting reconciliations.} The 0DTE settlement close matches the intraday parity forward to within about 2 bp on average. The wave-3 stock book reconciles exactly: price P\&L \$111,375 $-$ fees \$861 $+$ dividends \$797 $=$ ledger \$111,311. The H2 P\&L decomposition identities hold to within \$0.005. A hand-recomputed S5 trade matches the engine to the cent.
-\item \textbf{External benchmark.} The put-write engine tracks the published Cboe PUT index with monthly correlation 0.972 and tracking error 2.3\% per year (F2).
-\item \textbf{Bugs caught by mechanics checks} before any out-of-sample run: preferred-share prices contaminating the JPM stream; a session-index leak in the wave-3 date guard; and a missing equity-quote window that blanked H6.
-\end{itemize}
-
-% =====================================================================
-\section{Results overview}\label{sec:results}
-
-\Fig{wave3}{fig11_forest_all.png}{Forest plot of all primary specifications (\texttt{wave3/figures/fig11\_forest\_all.png}).}{fig:forest}
-
-Table~\ref{tab:master} lists each strategy with its primary (or amended) specification. ``Dev'' is the development period and ``OOS'' is the wave-2 2024H2 holdout or the wave-3 2024 test. Returns are annualized excess returns on the \$1M reference account. H4 survives the kill rule but is not significant, and its wave-3 re-implementation S3 is consistent with it. S1 and S2 also survive the kill rule without being significant. All other primaries are rejected.
-
-\input{master_table}
-
-Equity curves are in \figref{fig:eq2}{fig04_equity_curves.png} and \figref{fig:eq3}{fig12_w3_equity.png}. Full scorecards are \file{wave2/results/decisions.csv} and \file{wave3/results/decisions3.csv}.
-
-\Fig{wave2}{fig04_equity_curves.png}{Wave-2 equity curves (\texttt{wave2/figures/fig04\_equity\_curves.png}).}{fig:eq2}
-\Fig{wave3}{fig12_w3_equity.png}{Wave-3 equity curves (\texttt{wave3/figures/fig12\_w3\_equity.png}).}{fig:eq3}
-
-% =====================================================================
-\section{Strategy studies}\label{sec:strategies}
-
-Each study follows the same structure: economic intuition and literature, specification (signal and trading rules), implementation, and out-of-sample testing. Numbers are net of the stated costs.
-
-\subfile{strategies/w01_eod_spreads}
-\subfile{strategies/f1_f2_foundations}
-\subfile{strategies/h1_0dte}
-\subfile{strategies/h2_overnight_options}
-\subfile{strategies/h3_overnight_equity}
-\subfile{strategies/h4_s3_option_flow}
-\subfile{strategies/h5_preearnings_straddle}
-\subfile{strategies/h6_eod_momentum}
-\subfile{strategies/s1_preearnings_premium}
-\subfile{strategies/s2_ear_drift}
-\subfile{strategies/s4_preannouncement_flow}
-\subfile{strategies/s5_spxw_vix}
-\subfile{strategies/s6_rv_iv_straddles}
-\subfile{strategies/s7_pin}
-\subfile{strategies/s8_daytime_reversal}
-\subfile{strategies/s9_s10_calendar}
-
+\subfile{strategies/option_flow}
+\subfile{strategies/earnings_drift}
+\subfile{strategies/preearnings_premium}
 \subfile{allocation}
 
-% =====================================================================
-\section{What we learned}\label{sec:learned}
-\begin{enumerate}
-\item \textbf{Execution cost decides most of these strategies.} Spread crossing turned the documented overnight option premium negative (H2): it alone was about four times that premium. It is also why waves 0 and 1 failed. Designs that cross once and settle (H1, S5), or trade only in auctions (H3, H4, S1--S3, S8--S10), remove most of that cost. The strategies that remained were then limited by their signals, not their costs.
-\item \textbf{Short-volatility premia were not available in 2022--2024 at these strikes.} Realized moves matched implied straddles for 28-DTE SPXW (S5), and 0DTE flies were negative or flat (H1, S7). This period contains a bear market and a strong recovery, so the result may be period-specific.
-\item \textbf{Information in option flow is the most persistent signal.} It appeared in the wave-2 development and holdout periods and survived realistic fees in the wave-3 test. It decays within days. Its development $t$-statistics stay below 2, and multiplicity-adjusted evidence is weak.
-\item \textbf{The data limits which questions can be asked.} Trade-sampled quotes make straddle-level intraday tests (H2, H5) depend on amendments, and 15 names limit every cross-sectional test.
-\end{enumerate}
-
-% =====================================================================
 \section{Limitations and next steps}\label{sec:limits}
 
-\paragraph{Out-of-sample periods.}
-The wave-3 test year (2024) was not a virgin holdout: wave-2 results on 2024 had been seen, though none of the wave-3 signals had been computed on it. S3, S4 and S7 are exploratory and need 2025 data.
+\paragraph{Statistical strength.} No result here is strong enough to rely on. The fitting-period $t$-statistics are 1.38 for option flow, 0.87 for earnings drift and 1.08 for the pre-earnings premium. The deflated Sharpe ratio \citep{bailey2014} adjusts for the number of variants tried, 88 across our last two rounds of testing. It is 0.13, 0.05 and 0.09 for the three strategies. A value near 1 would indicate a result unlikely to come from searching alone.
 
-\paragraph{Unmodelled execution and lifecycle.}
-The option tape's sampling scheme is undocumented, and fill rates may differ in live markets. Early assignment (S6), the SPX AM settlement value (F2) and complex-order books are not modelled. Fees follow a public schedule, not executed broker statements.
+\paragraph{Selection.} We kept these three strategies after seeing how all 25 performed, including in 2024. Each one's 2024 result is a genuine out-of-sample test of rules fixed in advance, but the choice of which three to present is not.
 
-\paragraph{Next steps.}
-\begin{itemize}
-\item Freeze \file{wave3/cpp/s3_flow.cpp} (1-day hold, all-flow) and \file{wave2/cpp/h4_info.cpp} as they are and run each once on 2025 data. Pre-register the decision rule: Fama--MacBeth $t > 2$ and positive net Sharpe.
-\item Obtain a quote-event option feed (not trade-attached) to make H2 and H5 testable as originally written.
-\item Extend H4 and S3 to at least 100 names. Breadth is the binding constraint.
-\end{itemize}
+\paragraph{Data.} The universe has 15 stocks, of which about 12 are tradeable on a typical day because some lack auction data. The option trade record is a sample of all trades rather than the full tape, so the flow signal is measured with noise. Fees follow a public schedule rather than executed broker statements.
 
-\section*{References}
-\addcontentsline{toc}{section}{References}
+\paragraph{Next steps.} The rules for all three strategies and the portfolio are frozen in code. The natural next test is a single run on 2025 data with no changes. The option-flow signal would also benefit from a larger universe: its strength comes from ranking many stocks each day, and 15 names limits that.
+
+\clearpage
+\appendix
+\section{Other strategies we tested}\label{app:other}
+
+We also tested strategies that did not reach the report's main sections, under the same costs and rules. Table~\ref{tab:other} lists each one with its out-of-sample result and the reason we dropped it. Most failed for one of two reasons. Some paid away their edge in bid--ask spreads, because they had to buy and sell options. Others were positive in one period and negative in the other.
+
+\begin{table}[H]\centering\small
+\caption{Strategies tested and dropped. ``Out-of-sample'' is 2024 (or 2024H2 for strategies H1--H6); returns are annualized excess returns on a \$1M account.}\label{tab:other}
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}p{3.1cm} Y r >{\raggedright\arraybackslash}p{3.4cm}}
+\toprule
+Strategy & Idea & Out-of-sample & Why dropped \\
+\midrule
+Credit spreads, condors, debit verticals & Sell or buy option premium daily on SPY, QQQ, SPX & $-0.4\%$ to $-4.5\%$ & Spread costs exceeded the premium \\
+0DTE SPXW iron fly (H1) & Sell same-day index options, hold to cash settlement & $+3.0\%$ & Negative in 2022--2023 ($-3.1\%$) \\
+Overnight short straddle (H2) & Collect the overnight option premium, delta-hedged & $+0.9\%$ & Spread costs four times the premium \\
+Overnight stock drift (H3) & Buy at the close, sell at the next open & $+28.8\%$ & Result relied on a few days \\
+Pre-earnings straddle (H5) & Buy volatility before earnings & $-0.5\%$ & Negative in both periods \\
+End-of-day momentum (H6) & Follow the day's move into the close & $-0.9\%$ & Negative out of sample \\
+Pre-announcement option flow (S4) & Option flow before earnings & $+0.2\%$ & No effect \\
+28-day SPXW iron fly (S5) & Sell index volatility when the VIX curve slopes up & $-8.9\%$ & Negative in both periods \\
+Volatility-gap straddles (S6) & Long cheap, short rich single-stock volatility & $-6.9\%$ & Negative in both periods \\
+0DTE pin (S7) & Center the iron fly on the largest open-interest strike & $-0.1\%$ & No pin effect \\
+Daytime reversals (S8) & Rank stocks by overnight-up, intraday-down days & $+19.6\%$ & Negative in 2022--2023 \\
+FOMC drift (S9) & Hold SPY into Fed announcements & $-0.9\%$ & Negative out of sample \\
+Turn of the month (S10) & Hold SPY over month ends & $-3.6\%$ & Negative out of sample \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+As a check on the accounting, a monthly SPX put-writing strategy built with the same option code tracks the published Cboe PUT index with a monthly correlation of 0.972 and a tracking error of 2.3\% a year.
+
+\section{Implementation}\label{app:impl}
+
+\paragraph{Code.} Each strategy is a C++ program that reads reduced data files, applies the rules day by day, and writes a trade list and a daily return series (\texttt{wave3/cpp/s3\_flow.cpp}, \texttt{wave3/cpp/s\_events.cpp}). Python scripts reduce the raw data with DuckDB and compute the statistics (\texttt{wave3/scorecard3.py}, \texttt{alloc/allocate.py}). Notebooks produce the figures.
+
+\paragraph{Accounting.} Stock positions are marked to the official close every day. Splits adjust share counts, and dividends are credited on the ex-date. Each strategy refuses to simulate dates after a configured end date, which is how the 2024 data were held back during development.
+
+\paragraph{Checks.} We reconciled the stock-position ledger by hand: price gains of \$111,375, less \$861 in fees, plus \$797 in dividends, match its \$111,311 total exactly. Rebuilding the engines from a clean copy of the repository reproduces the stored results byte for byte.
+
 \input{refs}
 
 \end{document}

@@ -1,0 +1,45 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+\section{Option-flow stock selection}\label{sec:flow}
+
+\subsection{Economic intuition}
+A trader with private information about a company can profit more from options than from the stock, because options offer leverage and draw less attention. If such traders are active, the direction of option trading should predict the stock's next move. \citet{easley1998} find that option volume carries information about future stock prices, \citet{pan2006} show that stocks with heavy put buying relative to call buying underperform over the following days, and \citet{johnsonso2012} link high option-to-stock volume to lower future returns. Implied-volatility measures built from option prices also predict stock returns \citep{cremers2010,xing2010}.
+
+\subsection{Signal and trading rules}
+For each stock $i$ and day $t$, we classify every regular-hours option trade as a buy if it printed above the midpoint of the prevailing bid and offer, and as a sell if it printed below. Each trade is weighted by the option's delta $\delta_k$ from that day's end-of-day chain, which converts it into an equivalent number of shares. The signal is the net share-equivalent buying as a fraction of all share-equivalent volume:
+\begin{equation}
+  \text{flow}_{i,t} \;=\; \frac{\sum_k \delta_k\,(\text{buy}_k - \text{sell}_k)}{\sum_k |\delta_k|\,(\text{buy}_k + \text{sell}_k)} .
+\end{equation}
+Because it is a ratio, the signal does not depend on how many trades the data source happens to record.
+
+Each day we rank the tradeable stocks by flow (on average 12). Weights are the ranks minus their average, scaled so the long side and the short side are each 50\% of capital. The portfolio is therefore dollar neutral. We enter at the next morning's opening auction ($t+1$) and hold until the following opening auction ($t+2$), rebalancing every day.
+
+\subsection{Implementation}
+Positions trade only in opening auctions, so the costs are fees and short borrowing. Daily rebalancing turns over about 128\% of capital per day, counting both sides. On a \$1M account, fees average \$48.8 a day and borrowing \$7.9 a day. The engine is \texttt{wave3/cpp/s3\_flow.cpp}.
+
+\subsection{Results}
+Table~\ref{tab:flow} reports the results. The strategy earned 8.6\% a year over cash in 2022--2023 and 12.9\% in 2024. Its returns are almost unrelated to the market: the beta to SPY is close to zero in both periods. Removing the five best days leaves 4.3\% and 5.8\% a year, so the result does not hinge on a handful of days.
+
+\begin{table}[ht]\centering\small
+\caption{Option-flow stock selection, 1-day hold, after costs. Returns are annualized excess returns over cash on a \$1M account.}\label{tab:flow}
+\begin{tabular}{lrrrrr}
+\toprule
+Period & Return & Volatility & Sharpe & $t$-stat & Max drawdown \\
+\midrule
+2022--2023 (fitting) & 8.6\% & 9.0\% & 0.96 & 1.38 & $-9.1\%$ \\
+2024 (out-of-sample) & 12.9\% & 7.5\% & 1.71 & 1.82 & $-3.1\%$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The signal is short-lived. Holding the same ranking for five days, with one-fifth of the book rebalanced each day, earns $-2.0\%$ in 2022--2023 and $-2.9\%$ in 2024 (Figure~\ref{fig:flow}, right).
+
+An earlier version of this strategy, with lower assumed fees, was developed on January 2022 to June 2024 and tested on the second half of 2024. It earned 7.8\% a year in the fitting window (Sharpe 0.90) and 23.7\% in the test window (Sharpe 3.26). A Fama--MacBeth regression \citep{famamacbeth1973} of the next day's return on the standardized signal gives a slope of 3.6 basis points per standard deviation in the fitting window ($t = 1.63$) and 12 basis points in the test window ($t = 2.32$), shown in Figure~\ref{fig:flow} (left).
+
+\Fig{figures/fig_flow.png}{Left: next-day return per one-standard-deviation move in the flow signal, with 95\% intervals. Right: Sharpe ratio of the 1-day and 5-day holds.}{fig:flow}
+
+\subsection{Assessment}
+This is the strongest of the three strategies. It is positive in both periods, holds up after costs and without its best days, and is market neutral. Its weakness is statistical: the fitting-period $t$-statistic of 1.38 is well short of conventional significance, and the universe is small.
+
+\ifSubfilesClassLoaded{\input{../refs}}{}
+\end{document}

@@ -1,0 +1,45 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+\section{Earnings-announcement drift}\label{sec:drift}
+
+\subsection{Economic intuition}
+Prices tend to adjust to earnings news over several weeks rather than all at once, a pattern known as post-earnings drift \citep{chan1996}. Measuring the surprise usually requires analyst forecasts, which our data do not include. \citet{brandt2008} show that the stock's own abnormal return around the announcement works as a surprise measure, and that it predicts returns over the following weeks.
+
+\subsection{Signal and trading rules}
+For each announcement we measure the stock's return over the reaction window, net of its market exposure:
+\begin{equation}
+  \text{EAR} \;=\; r_{\text{stock}} - \beta\, r_{\text{SPY}} .
+\end{equation}
+The reaction window runs from the last close before the announcement to the first close after it. For an after-close announcement, that is the announcement day's close to the next day's close. For a before-open announcement, it is the previous close to the announcement day's close. The beta $\beta$ is estimated by regressing the stock's daily returns on SPY's over the previous 60 trading days, capped between 0.5 and 2 (average 1.22).
+
+The morning after the reaction window ends, we buy the stock at the opening auction if EAR is positive and short it if EAR is negative. Each position is 10\% of capital, hedged with an offsetting SPY position of $\beta$ times its value. We close both after 20 trading days at the official close. Positions in different stocks can overlap.
+
+\subsection{Implementation}
+The data cover 163 announcements across the 15 stocks: 104 in 2022--2023 and 59 in 2024. All trades are auction or closing-price trades. The engine is \texttt{wave3/cpp/s\_events.cpp}.
+
+\subsection{Results}
+Table~\ref{tab:drift} reports the results. The average hedged return per event was 0.50\% in 2022--2023 and 1.55\% in 2024 (Figure~\ref{fig:events}). Neither average is statistically different from zero, with $t$-statistics of 0.59 and 1.32. At the account level the strategy earned 3.4\% a year over cash in 2022--2023 and 12.8\% in 2024.
+
+\begin{table}[ht]\centering\small
+\caption{Earnings-announcement drift, 20-day hold, beta-hedged, after costs.}\label{tab:drift}
+\begin{tabular}{lrrrrrr}
+\toprule
+ & \multicolumn{3}{c}{Per event} & \multicolumn{3}{c}{Account (annualized)} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
+Period & Events & Mean & $t$-stat & Return & Sharpe & Max drawdown \\
+\midrule
+2022--2023 (fitting) & 104 & 0.50\% & 0.59 & 3.4\% & 0.64 & $-6.2\%$ \\
+2024 (out-of-sample) & 59 & 1.55\% & 1.32 & 12.8\% & 1.63 & $-6.1\%$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Larger reactions drift more. Restricting to announcements with $|\text{EAR}| > 2\%$ raises the average to 1.22\% per event in 2022--2023 (80 events) and 1.83\% in 2024 (42 events). The 2024 result is partly market exposure: although each position is hedged with a 60-day beta, the strategy's realized beta to SPY in 2024 was 0.31.
+
+\Fig{figures/fig_events.png}{Average beta-hedged return per event, with 95\% intervals clustered by exit date, for the two earnings strategies.}{fig:events}
+
+\subsection{Assessment}
+The drift is in the direction the literature predicts and is larger in 2024. There are only about 50 to 60 events a year across 15 stocks, so the averages are noisy. The leftover market exposure in 2024 suggests the hedge needs a more stable beta estimate.
+
+\ifSubfilesClassLoaded{\input{../refs}}{}
+\end{document}

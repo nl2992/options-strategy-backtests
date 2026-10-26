@@ -1,108 +1,70 @@
 \documentclass[main.tex]{subfiles}
 \begin{document}
+\section{Combining the three strategies}\label{sec:portfolio}
 
-\section{Capital allocation across strategies}\label{sec:alloc}
-
-\subsection{Motivation and setup}
-Most strategies in this study commit only part of their capital. The option sleeves cap risk at 0.5--1\% of equity per position, and the event sleeves hold positions on a fraction of days. A combined book therefore needs an explicit rule for capital that is not deployed. We park it in the Secured Overnight Financing Rate (SOFR). We then ask whether a portfolio of sleeves, with weights fixed from 2022--2023 data alone, would have added return over SOFR in 2024.
-
-Let $x_{i,t}$ be the daily excess return of sleeve $i$ over cash. These are the series the C++ engines write, one per pre-registered primary; the 13 sleeves are listed in Table~\ref{tab:sleeves}. Let $c_t$ be the SOFR accrual from session $t-1$ to $t$, using the fixing of session $t-1$ and an actual/360 day count. The New York Fed publishes the series; we downloaded it from its public API (770 fixings, 2021-12-01 to 2024-12-31). The portfolio total return is
+\subsection{Setup}
+Each strategy uses only part of its capital at any time. Option-flow selection is fully invested but dollar neutral, and the two earnings strategies hold positions only around announcements. We therefore combine them in one account and place all capital not assigned to a strategy in SOFR. With weights $w_i$ on strategy excess returns $x_{i,t}$ and the SOFR accrual $c_t$ (actual/360, at the previous session's fixing), the daily portfolio return is
 \begin{equation}
-  r^{p}_{t} \;=\; c_t \;+\; \sum_{i=1}^{13} w_i\, x_{i,t}, \qquad w_i \ge 0,\quad \sum_i w_i \le 1 .
-  \label{eq:port}
+  r_t \;=\; c_t + \sum_{i=1}^{3} w_i\, x_{i,t}, \qquad w_i \ge 0,\quad \sum_i w_i \le 1 .
 \end{equation}
-A weight $w_i$ is the share of capital run through sleeve $i$. Inside a sleeve, idle cash already earns the cash rate, so \eqref{eq:port} credits SOFR on all undeployed capital. The sleeves' own excess returns are measured against the 1-month T-bill. We treat the small T-bill/SOFR basis as negligible, which is an approximation.
+In 2024 SOFR alone returned 5.40\%; in 2022--2023 it averaged 3.37\% a year.
 
 \subsection{Allocation rules}
-All rules are long-only. Covariances use the Ledoit--Wolf shrinkage estimator toward a scaled identity \citep{ledoit2004}.
-\begin{enumerate}[leftmargin=*]
-  \item \textbf{1/N}: equal capital to every sleeve. This is the benchmark that estimated rules often fail to beat out of sample \citep{demiguel2009}.
-  \item \textbf{Inverse volatility}: $w_i \propto 1/\hat\sigma_i$, normalized to sum to one.
-  \item \textbf{Minimum variance}: $\min_w w^\top \hat\Sigma w$ subject to $\sum_i w_i = 1$.
-  \item \textbf{Markowitz (Bayes--Stein, 25\% cap)}: maximize $w^\top \tilde\mu / \sqrt{w^\top\hat\Sigma w}$ subject to $0 \le w_i \le 0.25$ and $\sum_i w_i = 1$ (the Sharpe ratio is scale-free, so the budget is fixed inside the optimizer) \citep{markowitz1952}. Here $\tilde\mu$ shrinks sample means toward the minimum-variance portfolio mean with Jorion's intensity \citep{jorion1986}.
-  \item \textbf{Development-screened 1/N}: equal weight on sleeves whose estimation-window Newey--West $t$ exceeds 1.
-\end{enumerate}
-
-\textbf{Schedules.} Weights are estimated on 2022-01-03 to 2023-12-29 and applied two ways:
-\begin{itemize}[leftmargin=*]
-  \item \textbf{Static}: estimated once and held through 2024.
-  \item \textbf{Walk-forward}: re-estimated at each 2024 month start on an expanding window.
+Weights are estimated on 2022--2023 only and held fixed through 2024. We compare three rules.
+\begin{itemize}
+  \item \textbf{Equal weight}: one third of capital each. Simple rules like this are hard to beat out of sample, because estimated means are noisy \citep{demiguel2009}.
+  \item \textbf{Inverse volatility}: weights proportional to the reciprocal of each strategy's volatility, so each contributes similar risk.
+  \item \textbf{Markowitz}: weights that maximize the expected Sharpe ratio \citep{markowitz1952}, with no strategy above 50\%. Expected returns are shrunk toward a common value \citep{jorion1986}, and covariances are shrunk toward a simpler structure \citep{ledoit2004}, both to limit estimation error.
 \end{itemize}
-
-\textbf{Volatility target.} We also scale the static 1/N and Markowitz books to a 5\% in-sample volatility, with leverage capped at 3, following the logic of volatility targeting \citep{moreira2017}. Leverage multiplies excess returns, and financing is implicitly at SOFR.
-
-\subsection{Results}
-Table~\ref{tab:alloc} reports each rule. In 2024, holding SOFR alone returned 5.40\% (mean annualized accrual 5.26\%).
+Table~\ref{tab:weights} shows the resulting weights. Markowitz and inverse volatility both favor the pre-earnings premium because of its low volatility.
 
 \begin{table}[ht]\centering\small
-\caption{Allocation results. Excess and Sharpe are relative to SOFR. Weights never use 2024 data, except that the walk-forward schedule uses 2024 data up to each rebalance.}\label{tab:alloc}
-\begin{tabular}{llrrrrr}
+\caption{Weights estimated on 2022--2023.}\label{tab:weights}
+\begin{tabular}{lrrr}
 \toprule
-Rule & Schedule & Total & Excess & Vol & Sharpe & Max DD \\
+Strategy & Equal weight & Inverse volatility & Markowitz \\
 \midrule
-\multicolumn{7}{l}{\emph{2022--2023, in-sample}} \\
-1/N & static & 3.93\% & 0.50\% & 2.03\% & 0.25 & $-1.34\%$ \\
-Inverse vol & static & 3.51\% & 0.08\% & 0.76\% & 0.11 & $-0.42\%$ \\
-Minimum variance & static & 3.33\% & $-0.10\%$ & 0.42\% & $-0.23$ & $-0.30\%$ \\
-Markowitz (B--S, cap 25\%) & static & 6.22\% & 2.67\% & 1.65\% & 1.62 & $-0.86\%$ \\
-Dev-screened 1/N & static & 7.42\% & 3.84\% & 3.10\% & 1.24 & $-1.93\%$ \\
-\midrule
-\multicolumn{7}{l}{\emph{2024, out-of-sample}} \\
-1/N & static & 9.91\% & 4.21\% & 2.10\% & 2.00 & $-0.89\%$ \\
-Inverse vol & static & 5.91\% & 0.49\% & 1.01\% & 0.48 & $-0.45\%$ \\
-Inverse vol & walk-forward & 5.99\% & 0.57\% & 1.00\% & 0.56 & $-0.43\%$ \\
-Minimum variance & static & 5.16\% & $-0.23\%$ & 0.55\% & $-0.41$ & $-0.23\%$ \\
-Minimum variance & walk-forward & 5.12\% & $-0.27\%$ & 0.51\% & $-0.53$ & $-0.22\%$ \\
-Markowitz (B--S, cap 25\%) & static & 9.31\% & 3.67\% & 1.94\% & 1.89 & $-0.74\%$ \\
-Markowitz (B--S, cap 25\%) & walk-forward & 10.43\% & 4.69\% & 2.27\% & 2.07 & $-0.89\%$ \\
-Dev-screened 1/N & static & 10.05\% & 4.35\% & 2.67\% & 1.63 & $-1.13\%$ \\
-Dev-screened 1/N & walk-forward & 14.01\% & 7.91\% & 3.54\% & 2.23 & $-1.13\%$ \\
-1/N, 5\% vol target ($\times 2.46$) & static & 16.75\% & 10.37\% & 5.18\% & 2.00 & $-2.29\%$ \\
-Markowitz, 5\% vol target ($\times 3.00$) & static & 17.45\% & 11.00\% & 5.82\% & 1.89 & $-2.61\%$ \\
+Option-flow stock selection & 33.3\% & 16.4\% & 13.2\% \\
+Earnings-announcement drift & 33.3\% & 29.1\% & 36.8\% \\
+Pre-earnings premium & 33.3\% & 54.4\% & 50.0\% \\
 \bottomrule
 \end{tabular}
 \end{table}
 
+\subsection{Results}
+The three strategies have low correlations with one another, so the combination is steadier than any single strategy. Table~\ref{tab:alloc} reports the results. Equal weight had a 2022--2023 Sharpe ratio of 1.28, against 0.64 to 0.96 for the individual strategies. In 2024 it returned 14.91\%, or 8.71\% over SOFR, with a maximum drawdown of $-1.68\%$.
 
-\Fig{alloc}{fig18_alloc_weights.png}{Static weights estimated on 2022--2023 for each allocation rule. The dashed line marks the 25\% Markowitz cap.}{fig:alloc_w}
-\Fig{alloc}{fig19_alloc_corr.png}{Correlations of daily sleeve returns, 2022--2023.}{fig:alloc_corr}
-\Fig{alloc}{fig20_alloc_2024.png}{Cumulative 2024 total return of selected allocation rules, including SOFR on idle capital.}{fig:alloc_2024}
+\begin{table}[ht]\centering\small
+\caption{Portfolio results. Total return includes SOFR on idle capital; excess return and Sharpe ratio are relative to SOFR.}\label{tab:alloc}
+\begin{tabular}{llrrrrr}
+\toprule
+Period & Rule & Total & Excess & Volatility & Sharpe & Max drawdown \\
+\midrule
+2022--2023 & Equal weight & 8.16\% & 4.54\% & 3.54\% & 1.28 & $-2.21\%$ \\
+ & Inverse volatility & 6.99\% & 3.42\% & 2.46\% & 1.39 & $-1.99\%$ \\
+ & Markowitz & 6.84\% & 3.28\% & 2.49\% & 1.32 & $-1.92\%$ \\
+\midrule
+2024 & Equal weight & 14.91\% & 8.71\% & 3.75\% & 2.32 & $-1.68\%$ \\
+ & Inverse volatility & 11.94\% & 6.07\% & 3.04\% & 2.00 & $-1.33\%$ \\
+ & Markowitz & 12.55\% & 6.62\% & 3.42\% & 1.94 & $-1.54\%$ \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-Figures~\ref{fig:alloc_w}--\ref{fig:alloc_2024} show the weights, the sleeve correlations (median off-diagonal $-0.01$, largest absolute value 0.25) and the 2024 paths.
+\Fig{figures/fig_portfolio.png}{Left: weights estimated on 2022--2023. Right: cumulative 2024 total return of each rule, including SOFR on idle capital, against SOFR alone.}{fig:portfolio}
 
-\textbf{Reading the table.}
-\begin{itemize}[leftmargin=*]
-  \item \textbf{Minimum variance.} It loads on the sleeves with the lowest volatility: the small-sized overnight and pre-earnings straddle books (H2, H5), which carry 0.5--0.6\% annual volatility at their risk caps (2022--2023). It returns roughly SOFR. Low volatility here reflects small position sizes, not diversification.
-  \item \textbf{Markowitz with shrunk means.} It avoids that trap. It puts its weight on the sleeves with positive estimation-window means. H6 and S1 reach the 25\% cap; S2, S3 and S9 receive 13--15\%; H5, S8 and S10 receive at most 4\%. It earns 3.7--4.7\% over SOFR in 2024.
-  \item \textbf{1/N.} It earns 4.2\% over SOFR. That return comes largely from sleeves that were weak in 2022--2023 and strong in 2024 (H3 overnight equity, S8): equal weighting kept them in the book.
-  \item \textbf{Uncertainty.} No 2024 Sharpe ratio in Table~\ref{tab:alloc} rests on more than 252 daily observations. The standard error of a one-year Sharpe estimate is about 1, so the differences between the 1/N, Markowitz and screened rules are not statistically distinguishable.
-\end{itemize}
+All three rules beat SOFR in 2024 (Figure~\ref{fig:portfolio}). Equal weight did best, because it gave the most weight to the two strategies that were strongest in 2024. With one year of data, the differences between the rules are within noise. Re-estimating the Markowitz weights each month during 2024 changes little: it returns 12.51\%.
 
-\subsection{Why this 2024 test is weaker than it looks}
-Three caveats limit what Table~\ref{tab:alloc} can support.
-\begin{enumerate}[leftmargin=*]
-  \item \textbf{Known sleeve outcomes.} No weight uses 2024 returns, but the sleeves' 2024 outcomes were already known when this allocation study was designed: the wave-2 holdout and the wave-3 test both cover 2024. The set of sleeves is ``all primaries'', which limits but does not remove that knowledge. The option-flow sleeve uses the 1-day hold (the wave-2 H4 specification with realistic fees), not the 5-day hold designated in the wave-3 pre-registration; the estimation window would have chosen it as well (Sharpe 0.95 against $-0.46$).
-  \item \textbf{Fees and contract sizes.} Wave-2 sleeves (H1--H6) carry the wave-2 fee assumptions, which understate single-name and ETF option fees by about \$0.43 per contract. Scaling a sleeve by $w_i$ also ignores integer contract sizes. At $w_i = 0.077$ on a \$1M account, several option sleeves would trade fractional contracts.
-  \item \textbf{Leverage.} The volatility-targeted books use 2.46--3 times leverage on sleeves whose risk is dominated by rare tail days (H1, S5). Their 2024 Sharpe ratios are the unlevered ratios. Their drawdowns would scale with any tail event that 2024 did not contain.
+The portfolio runs at about 3--4\% volatility. Scaling equal weight to a 5\% volatility target needs 1.41 times leverage; in 2024 that would have returned 19.01\%, with a maximum drawdown of $-2.46\%$.
+
+\subsection{Caveat and proposal}
+These portfolio results overstate what an investor could have expected. We selected the three strategies after seeing their 2024 results, so 2024 is not out-of-sample for the choice of strategies. It is out-of-sample only for each strategy's rules and for the weights.
+
+We propose equal weighting, the rule with the fewest estimated inputs, and a staged start:
+\begin{enumerate}
+  \item Run the frozen portfolio on 2025 data without changes. Proceed only if it beats SOFR after costs and its drawdown stays under 2\%.
+  \item If it passes, allocate a small risk budget, with the rest of the capital in SOFR. Stop any strategy whose rolling 63-day Sharpe ratio falls below $-1$, or whose drawdown exceeds twice its 2022--2024 maximum.
 \end{enumerate}
+This is a research proposal, not investment advice.
 
-\subsection{Allocation proposal}
-These results suggest a combined book can add return over SOFR with low volatility, but they do not establish it. We propose a staged allocation in which every stage has a pre-registered gate.
-
-\begin{enumerate}[leftmargin=*]
-  \item \textbf{Default: SOFR.} All capital not assigned to a sleeve earns SOFR, through overnight reverse repo or a government money-market fund. This is the benchmark every stage must beat after costs.
-  \item \textbf{Stage 1, paper portfolio in 2025.}
-    \begin{itemize}[leftmargin=*]
-      \item Freeze the Bayes--Stein Markowitz rule (25\% cap, monthly walk-forward on an expanding window) and the 1/N rule as a control.
-      \item Universe: the 13 sleeves, with wave-2 sleeves re-costed at the wave-3 fee schedule.
-      \item Run both on 2025 data without changes.
-      \item Pass gate: positive excess over SOFR, a Sharpe above that of the 1/N control, and a drawdown below 2\% unlevered.
-    \end{itemize}
-  \item \textbf{Stage 2, small live risk budget.} Only if Stage 1 passes, allocate to the two sleeves with replicated evidence (S3 option flow and S2 announcement drift) at a combined 5\% annualized volatility budget, with the remainder in SOFR. Each sleeve has a kill switch: stop if its live rolling 63-session Sharpe is below $-1$, or if its drawdown exceeds twice its 2022--2024 maximum.
-  \item \textbf{Excluded sleeves.} The short-volatility sleeves (H1, S5) and the straddle sleeves (H2, H5, S6) have negative estimation-window means and receive zero Markowitz weight. They stay out unless a new pre-registered test supports them.
-\end{enumerate}
-
-This proposal describes a research protocol for the strategies in this study. It is not investment advice. The allocation code is \texttt{alloc/allocate.py}; weights, sleeve statistics and daily portfolio returns are in \texttt{alloc/}.
-
-\ifSubfilesClassLoaded{\section*{References}\input{refs}}{}
 \end{document}

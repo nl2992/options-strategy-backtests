@@ -1,0 +1,37 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+\section{Pre-earnings premium}\label{sec:pre}
+
+\subsection{Economic intuition}
+Stocks have historically earned higher returns in the days around scheduled earnings announcements. Two explanations are compensation for the risk of the coming news, and buying pressure from investors whose attention the announcement draws \citep{frazzini2007,barber2013}. The strategy holds stocks into the announcement and exits just before the news, so it takes on the pre-announcement drift but not the announcement jump itself.
+
+\subsection{Signal and trading rules}
+The signal is the earnings calendar. Let $X$ be the last trading session before the announcement: the announcement day itself for an after-close release, and the day before for a before-open release. We buy the stock at the close five sessions before $X$ and sell at the close of $X$. Each position is 10\% of capital, hedged with an offsetting SPY position sized by the same 60-day beta as in Section~\ref{sec:drift}. We assume announcement dates are known at least seven trading days in advance, as companies normally publish them.
+
+\subsection{Implementation}
+The data cover 165 announcements: 105 in 2022--2023 and 60 in 2024. All trades are at the official close. The engine is \texttt{wave3/cpp/s\_events.cpp}.
+
+\subsection{Results}
+In 2022--2023 the hedged return averaged 0.46\% per event ($t = 1.47$), and the strategy earned 2.4\% a year over cash (Sharpe 0.88). In 2024 the average fell to 0.06\% per event ($t = 0.02$), with 0.4\% a year (Sharpe 0.17). Table~\ref{tab:pre} summarizes the results, and Figure~\ref{fig:events} compares the per-event averages with the drift strategy.
+
+\begin{table}[ht]\centering\small
+\caption{Pre-earnings premium, five-session hold, beta-hedged, after costs.}\label{tab:pre}
+\begin{tabular}{lrrrrrr}
+\toprule
+ & \multicolumn{3}{c}{Per event} & \multicolumn{3}{c}{Account (annualized)} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
+Period & Events & Mean & $t$-stat & Return & Sharpe & Max drawdown \\
+\midrule
+2022--2023 (fitting) & 105 & 0.46\% & 1.47 & 2.4\% & 0.88 & $-3.3\%$ \\
+2024 (out-of-sample) & 60 & 0.06\% & 0.02 & 0.4\% & 0.17 & $-1.4\%$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Without the SPY hedge, the 2022--2023 average rises to 1.10\% per event ($t = 2.28$). Most of that is market exposure, and the unhedged 2024 average is close to zero.
+
+\subsection{Assessment}
+This is the weakest of the three. The 2022--2023 result is small and mostly disappears once its five best days are removed, and the premium did not appear in 2024. We keep it in the portfolio for its low volatility and low correlation with the other two strategies. Its own evidence is weak.
+
+\ifSubfilesClassLoaded{\input{../refs}}{}
+\end{document}

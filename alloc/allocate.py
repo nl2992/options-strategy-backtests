@@ -22,6 +22,12 @@ SLEEVES = {  # label -> (results dir, engine, variant)
     "S8 daytime reversal": ("wave3", "s_calendar", "S8_nr"), "S9 FOMC": ("wave3", "s_calendar", "S9_fomc"),
     "S10 turn of month": ("wave3", "s_calendar", "S10_tom"),
 }
+# `python alloc/allocate.py core3`: only the three strategies kept in the report, 50% cap (three weights must reach 100%)
+CORE3 = ["S1 pre-earn premium", "S2 EAR drift", "S3 option flow (1d)"]
+CAP = 0.25
+if len(sys.argv) > 1 and sys.argv[1] == "core3":
+    SLEEVES = {k: SLEEVES[k] for k in CORE3}; CAP = 0.5; OUT = OUT / "core3"
+MKW = f"Markowitz (Bayes-Stein, cap {CAP:.0%})"
 
 # ---------- data ----------
 sess = pd.read_csv(R / "wave2/extracts/ctx_sessions.csv").date.values
@@ -61,15 +67,15 @@ def weights(method, Y, names, dev_t=None):
     if method == "inverse vol": w = 1 / vol; return w / w.sum()
     if method == "min variance":
         w = solve(lambda w: w @ C @ w * 1e6 + 1e3 * (1 - w.sum()) ** 2, N, 1.0); return w / w.sum()
-    if method == "Markowitz (Bayes-Stein, cap 25%)":
+    if method == MKW:
         m = jorion_mean(Y, C)
         # max-Sharpe is scale-free, so fix the budget (sum = 1) inside the solver; renormalizing afterwards would break the cap
-        return solve(lambda w: -(w @ m) / np.sqrt(w @ C @ w + 1e-18), N, 0.25, full=True)
+        return solve(lambda w: -(w @ m) / np.sqrt(w @ C @ w + 1e-18), N, CAP, full=True)
     if method == "dev-screened 1/N (NW t>1)":
         k = np.array([nw_t(Y[:, j]) > 1 for j in range(N)], float); return k / max(k.sum(), 1)
     raise ValueError(method)
 
-METHODS = ["1/N", "inverse vol", "min variance", "Markowitz (Bayes-Stein, cap 25%)", "dev-screened 1/N (NW t>1)"]
+METHODS = ["1/N", "inverse vol", "min variance", MKW, "dev-screened 1/N (NW t>1)"]
 names = list(SLEEVES)
 dev = X.index <= EST_END
 
@@ -104,7 +110,7 @@ for m in METHODS:
             if sched == "walk-forward" and per.startswith("2022"): continue
             rows.append(dict(method=m, schedule=sched, period=per, **stats(x[msk], cash)))
 # vol-targeted variants: scale the static weights so in-sample vol = 5%, leverage <= 3 (excess returns scale; financing at SOFR)
-for m in ["1/N", "Markowitz (Bayes-Stein, cap 25%)"]:
+for m in ["1/N", MKW]:
     x0 = portfolio(m, "static"); k = min(3.0, 0.05 / (x0[dev].std() * np.sqrt(252)))
     x = k * x0; curves[f"{m} | static, 5% vol target (x{k:.2f})"] = x
     for per, msk in [("2022-23 (in-sample)", dev), ("2024 (out-of-sample)", ~dev)]:
@@ -113,7 +119,7 @@ summ = pd.DataFrame(rows)
 cash_only = stats(pd.Series(0.0, index=X.index)[~dev], cash)
 
 # ---------- outputs ----------
-OUT.mkdir(exist_ok=True)
+OUT.mkdir(parents=True, exist_ok=True)
 pd.DataFrame(W_static).to_csv(OUT / "weights_static.csv")
 pd.DataFrame({m: pd.DataFrame(W_wf[m], index=names).mean(axis=1) for m in METHODS}).to_csv(OUT / "weights_walkforward_mean.csv")
 pd.DataFrame(curves).assign(sofr=cash).to_csv(OUT / "portfolio_daily_excess.csv")
@@ -128,5 +134,5 @@ with pd.option_context("display.width", 250, "display.max_columns", 20):
 
 # self-check: weights are long-only and fully or partly invested
 for m, w in W_static.items(): assert (w >= -1e-9).all() and w.sum() <= 1 + 1e-6, m
-assert W_static['Markowitz (Bayes-Stein, cap 25%)'].max() <= 0.25 + 1e-6
-for w in W_wf['Markowitz (Bayes-Stein, cap 25%)'].values(): assert w.max() <= 0.25 + 1e-6
+assert W_static[MKW].max() <= CAP + 1e-6
+for w in W_wf[MKW].values(): assert w.max() <= CAP + 1e-6
